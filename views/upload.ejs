@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Grad.LMS</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+<style>
+    .video-preview {
+        position: relative;
+        height: 200px;
+        overflow: hidden;
+        border-radius: 8px 8px 0 0;
+    }
+    .video-preview video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .video-preview::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.2);
+        transition: all 0.3s ease;
+    }
+    .video-preview:hover::after {
+        background: rgba(0,0,0,0.1);
+    }
+    .date-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(255, 255, 255, 0.9);
+        color: #666;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        z-index: 1;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .btn-watch {
+        background-color: #06BBCC;
+        border-color: #06BBCC;
+        z-index: 1;
+    }
+    .btn-watch:hover {
+        background-color: #0597a6;
+        border-color: #0597a6;
+    }
+    .institute-info {
+        background: linear-gradient(135deg, #06BBCC 0%, #0597a6 100%);
+        color: white;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+    .teacher-info {
+        font-size: 0.9rem;
+        margin-bottom: 5px;
+    }
+    .institute-name {
+        font-size: 0.85rem;
+        color: #6c757d;
+    }
+</style>
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="lib/animate/animate.min.css" rel="stylesheet">
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="css/style.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Spinner Start -->
+    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- Spinner End -->
+
+    <!-- Navbar Start -->
+    <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
+        <a href="/" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
+            <h2 class="m-0 text-primary"><i class="fa fa-book me-3"></i>Grad.LMS</h2>
+        </a>
+        <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav ms-auto p-4 p-lg-0">
+                <a href="/" class="nav-item nav-link">Home</a>
+                <a href="/about" class="nav-item nav-link">About</a>
+                <a href="/upload" class="nav-item nav-link active">Courses</a>
+                <a href="/books" class="nav-item nav-link">Books</a>
+            </div>
+        </div>
+    </nav>
+    <!-- Navbar End -->
+
+    <!-- Header Start -->
+    <div class="container-fluid bg-primary py-5 mb-5 page-header">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-10 text-center">
+                    <h1 class="display-3 text-white animated slideInDown">Courses</h1>
+                    <% if (typeof user !== 'undefined' && user.institute) { %>
+                        <p class="text-white-50 mb-0">From <%= user.institute %></p>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Header End -->
+
+    <!-- Institute Info Section - Always visible when user has institute -->
+    <% if (typeof user !== 'undefined' && user.institute) { %>
+        <div class="container mb-5">
+            <div class="institute-info text-center wow fadeInUp" data-wow-delay="0.1s">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h4 class="mb-2">
+                            <i class="fas fa-university me-2"></i>
+                            Learning from <%= user.institute %>
+                        </h4>
+                        <p class="mb-0">Access courses from teachers in your institute</p>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-flex justify-content-center justify-content-md-end">
+                            <div class="text-center">
+                                <h3 class="mb-0" id="totalCourses">0</h3>
+                                <small>Available Courses</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <% } %>
+
+    <!-- Filter Section -->
+    <div class="container py-5">
+        <div class="wow fadeInUp bg-light rounded p-4 mb-5" data-wow-delay="0.1s">
+            <div class="row align-items-center">
+                <div class="col-md-5 mb-3 mb-md-0">
+                    <div class="position-relative">
+                        <input type="text" class="form-control" id="searchInput" placeholder="Search courses...">
+                        <i class="fa fa-search position-absolute end-0 top-50 translate-middle-y me-3"></i>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <select class="form-select" id="teacherFilter">
+                        <option value="">All Teachers</option>
+                        <% 
+                        // Filter videos to only include those from teachers of the same institute as the student
+                        let instituteVideos = videos;
+                        if (typeof user !== 'undefined' && user.institute) {
+                            instituteVideos = videos.filter(v => 
+                                v.teacherId && 
+                                v.teacherId.institute && 
+                                v.teacherId.institute === user.institute
+                            );
+                        }
+                        
+                        // Get unique teachers from the filtered videos
+                        const uniqueTeachers = [...new Set(instituteVideos
+                            .filter(v => v.teacherId && v.teacherId.sname)
+                            .map(v => v.teacherId.sname))];
+                        
+                        uniqueTeachers.forEach(function(teacher) { %>
+                            <option value="<%= teacher %>"><%= teacher %></option>
+                        <% }); %>
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex align-items-center">
+    <div class="d-flex align-items-center gap-3 mx-auto">
+        <span class="badge bg-primary rounded-pill px-3 py-2 fs-6">
+            <i class="fa fa-video me-1"></i> <span id="courseCount">0</span> Courses
+        </span>
+        <span class="badge bg-success rounded-pill px-3 py-2 fs-6">
+            <i class="fa fa-users me-1"></i> <%= uniqueTeachers.length %> Teachers
+        </span>
+    </div>
+</div>
+            </div>
+        </div>
+        
+        <!-- Courses Start -->
+        <div class="container-xxl category">
+            <div class="container">
+                <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+                    <h6 class="section-title bg-white text-center text-primary px-3">Available Courses</h6>
+                    <h1 class="mb-5">Institute Course Library</h1>
+                </div>
+                <div class="row g-4" id="coursesContainer">
+                    <% if (typeof videos !== 'undefined' && videos.length > 0) { %>
+                        <% 
+                        // Only display videos from teachers of the same institute
+                        let displayVideos = videos;
+                        if (typeof user !== 'undefined' && user.institute) {
+                            displayVideos = videos.filter(v => 
+                                v.teacherId && 
+                                v.teacherId.institute && 
+                                v.teacherId.institute === user.institute
+                            );
+                        }
+                        
+                        if (displayVideos.length > 0) {
+                            displayVideos.forEach(function(video, index) { %>
+                                <div class="col-lg-4 col-md-6 video-item" 
+                                     data-name="<%= (video.title || video.videoName || '').toLowerCase() %>"
+                                     data-teacher="<%= video.teacherId?.sname || '' %>"
+                                     data-institute="<%= video.teacherId?.institute || '' %>">
+                                    <div class="course-item wow fadeInUp" data-wow-delay="0.<%= (index % 3) + 1 %>s">
+                                        <div class="position-relative overflow-hidden video-preview">
+                                            <video preload="metadata">
+                                                <source src="/uploads/<%= video.filename %>#t=0.5" type="video/mp4">
+                                                Your browser does not support the video tag.
+                                            </video>
+                                            <span class="date-badge">
+                                                <i class="far fa-calendar-alt me-1"></i>
+                                                <%= new Date(video.uploadDate || video.createdAt).toLocaleString('en-US', { 
+                                                    year: 'numeric',
+                                                    month: 'short',
+                                                    day: 'numeric'
+                                                }) %>
+                                            </span>
+                                            <div class="w-100 d-flex justify-content-center position-absolute bottom-0 start-0 mb-4">
+                                                <button onclick="playVideo('<%= video._id %>', '<%= video.filename %>')" 
+                                                        class="flex-shrink-0 btn btn-sm btn-primary px-3 btn-watch" 
+                                                        style="border-radius: 30px;">
+                                                    <i class="fas fa-play me-2"></i>Watch Now
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="text-center p-4">
+                                            <h5 class="mb-3 course-title">
+                                                <i class="fas fa-play-circle me-2"></i><%= video.title || video.videoName %>
+                                            </h5>
+                                            <% if (video.teacherId && video.teacherId.sname) { %>
+                                                <p class="text-muted teacher-info mb-1">
+                                                    <i class="fas fa-user me-1"></i>
+                                                    By: <strong><%= video.teacherId.sname %></strong>
+                                                </p>
+                                            <% } %>
+                                            <% if (video.teacherId && video.teacherId.institute) { %>
+                                                <p class="institute-name mb-2">
+                                                    <i class="fas fa-university me-1"></i>
+                                                    <%= video.teacherId.institute %>
+                                                </p>
+                                            <% } %>
+                                            <% if (video.description || video.videoDescription) { %>
+                                                <p class="text-muted small mt-2">
+                                                    <%= (video.description || video.videoDescription).substring(0, 100) %>
+                                                    <% if ((video.description || video.videoDescription).length > 100) { %>...
+                                                    <% } %>
+                                                </p>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% });
+                        } else { %>
+                            <div class="col-12 text-center">
+                                <div class="empty-state py-5">
+                                    <i class="fas fa-video-slash mb-3" style="font-size: 4rem; color: #6c757d;"></i>
+                                    <h4>No courses available from your institute</h4>
+                                    <p class="text-muted">There are currently no courses available from teachers in <%= user.institute %>.</p>
+                                    <p class="text-muted">Check back later for new content.</p>
+                                </div>
+                            </div>
+                        <% } %>
+                    <% } else { %>
+                        <div class="col-12 text-center">
+                            <div class="empty-state py-5">
+                                <i class="fas fa-video-slash mb-3" style="font-size: 4rem; color: #6c757d;"></i>
+                                <h4>No courses available</h4>
+                                <p class="text-muted">Check back later for new content.</p>
+                            </div>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+        <!-- Courses End -->
+
+        <!-- Video Player Modal -->
+        <div class="modal fade" id="videoModal" tabindex="-1" aria-labelledby="videoModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="videoModalLabel">Course Video</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-0">
+                        <div class="row g-0">
+                            <!-- Video Section (75%) -->
+                            <div class="col-md-9">
+                                <div class="position-relative">
+                                    <video id="videoPlayer" class="w-100" controls>
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                            </div>
+                            <!-- Notes Section (25%) -->
+                            <div class="col-md-3 border-start">
+                                <div class="p-3">
+                                    <h5 class="mb-3">Notes</h5>
+                                    <div class="mb-3">
+                                        <textarea id="noteInput" class="form-control" rows="4" placeholder="Write your notes here..."></textarea>
+                                        <div class="d-flex justify-content-between align-items-center mt-2">
+                                            <small class="text-muted">Current Time: <span id="videoTimestamp">0:00</span></small>
+                                            <button class="btn btn-primary btn-sm" onclick="saveNote()">Save Note</button>
+                                        </div>
+                                    </div>
+                                    <div id="notesList" class="overflow-auto" style="max-height: 500px;">
+                                        <!-- Notes will be populated here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer Start -->
+      <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
+        <div class="container py-5">
+            <div class="row g-5 justify-content-center">
+                <div class="col-lg-3 col-md-6">
+                    <h4 class="text-white mb-3">Quick Link</h4>
+                    <a class="btn btn-link" href="">About Us</a>
+                    <a class="btn btn-link" href="">Contact Us</a>
+                    <a class="btn btn-link" href="">Privacy Policy</a>
+                    <a class="btn btn-link" href="">Terms & Condition</a>
+                    <a class="btn btn-link" href="">FAQs & Help</a>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h4 class="text-white mb-3">Contact</h4>
+                    <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>123 abc,abc</p>
+                    <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+91 123-456-1028</p>
+                    <p class="mb-2"><i class="fa fa-envelope me-3"></i>abc@abc.com</p>
+                    <div class="d-flex pt-2">
+                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-twitter"></i></a>
+                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-facebook-f"></i></a>
+                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-youtube"></i></a>
+                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <h4 class="text-white mb-3">Our Features</h4>
+                    <p class="mb-2"><i class="fa fa-check me-3"></i>100% Secure Platform</p>
+                    <p class="mb-2"><i class="fa fa-check me-3"></i>Extensive Book Library</p>
+                    <p class="mb-2"><i class="fa fa-check me-3"></i>Quality Educational Videos</p>
+                    <p class="mb-2"><i class="fa fa-check me-3"></i>Teacher-Student Connections</p>
+                    <p class="mb-2"><i class="fa fa-check me-3"></i>24/7 Learning Access</p>
+                </div> 
+            </div>
+        </div>
+        <div class="container">
+            <div class="copyright">
+                <div class="row">
+                    <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                        &copy; <a class="border-bottom" href="#">Grad.LMS</a>, All Right Reserved Designed By <a class="border-bottom">ABC & TEAM</a>
+                    </div>
+                    <div class="col-md-6 text-center text-md-end">
+                        <div class="footer-menu">
+                            <a href="">Home</a>
+                            <a href="">Cookies</a>
+                            <a href="">Help</a>
+                            <a href="">FQAs</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <!-- Footer End -->
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/wow/wow.min.js"></script>
+    <script src="lib/easing/easing.min.js"></script>
+    <script src="lib/waypoints/waypoints.min.js"></script>
+    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="js/main.js"></script>
+    <script>
+    let currentVideoId = null;
+    let videoPlayer = null;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        videoPlayer = document.getElementById('videoPlayer');
+        
+        // Update timestamp while video is playing
+        if (videoPlayer) {
+            videoPlayer.addEventListener('timeupdate', function() {
+                const timestamp = Math.floor(videoPlayer.currentTime);
+                document.getElementById('videoTimestamp').textContent = formatTime(timestamp);
+            });
+        }
+        
+        updateCourseCount();
+        updateTotalCourses();
+        document.getElementById('searchInput').addEventListener('input', filterCourses);
+        document.getElementById('teacherFilter').addEventListener('change', filterCourses);
+    });
+
+    function filterCourses() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const selectedTeacher = document.getElementById('teacherFilter').value.toLowerCase();
+        const videoItems = document.querySelectorAll('.video-item');
+        
+        videoItems.forEach(item => {
+            const name = item.dataset.name;
+            const teacher = item.dataset.teacher.toLowerCase();
+            const institute = item.dataset.institute.toLowerCase();
+            
+            const matchesSearch = name.includes(searchTerm) || teacher.includes(searchTerm) || institute.includes(searchTerm);
+            const matchesTeacher = !selectedTeacher || teacher.includes(selectedTeacher);
+            
+            item.style.display = matchesSearch && matchesTeacher ? '' : 'none';
+        });
+        
+        updateCourseCount();
+    }
+
+    function updateCourseCount() {
+        const visibleCourses = document.querySelectorAll('.video-item:not([style*="display: none"])').length;
+        document.getElementById('courseCount').textContent = visibleCourses;
+    }
+
+    function updateTotalCourses() {
+        const totalCourses = document.querySelectorAll('.video-item').length;
+        const totalCoursesElement = document.getElementById('totalCourses');
+        if (totalCoursesElement) {
+            totalCoursesElement.textContent = totalCourses;
+        }
+    }
+
+    function playVideo(videoId, filename) {
+        currentVideoId = videoId;
+        const videoPlayer = document.getElementById('videoPlayer');
+        videoPlayer.src = `/uploads/${filename}`;
+        videoPlayer.load();
+        new bootstrap.Modal(document.getElementById('videoModal')).show();
+        
+        // Load existing notes for this video
+        loadNotes(videoId);
+    }
+
+    function formatTime(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        seconds = Math.floor(seconds % 60);
+        return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    function saveNote() {
+        const noteText = document.getElementById('noteInput').value.trim();
+        if (!noteText || !currentVideoId) return;
+        
+        const timestamp = Math.floor(videoPlayer.currentTime);
+        const note = {
+            id: Date.now(),
+            videoId: currentVideoId,
+            text: noteText,
+            timestamp: timestamp,
+            time: formatTime(timestamp),
+            date: new Date().toLocaleDateString()
+        };
+        
+        // Save note to localStorage (or send to server)
+        let notes = JSON.parse(localStorage.getItem('videoNotes') || '[]');
+        notes.push(note);
+        localStorage.setItem('videoNotes', JSON.stringify(notes));
+        
+        // Clear input and refresh notes list
+        document.getElementById('noteInput').value = '';
+        displayNotes(currentVideoId);
+    }
+
+    function loadNotes(videoId) {
+        displayNotes(videoId);
+    }
+
+    function displayNotes(videoId) {
+        const notes = JSON.parse(localStorage.getItem('videoNotes') || '[]');
+        const videoNotes = notes.filter(note => note.videoId === videoId);
+        
+        const notesList = document.getElementById('notesList');
+        if (videoNotes.length === 0) {
+            notesList.innerHTML = '<p class="text-muted text-center">No notes yet</p>';
+            return;
+        }
+        
+        notesList.innerHTML = videoNotes.map(note => `
+            <div class="border-bottom pb-2 mb-2">
+                <div class="d-flex justify-content-between align-items-start">
+                    <small class="text-primary fw-bold">${note.time}</small>
+                    <button class="btn btn-sm btn-outline-danger" onclick="deleteNote(${note.id})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+                <p class="mb-1 small">${note.text}</p>
+                <small class="text-muted">${note.date}</small>
+            </div>
+        `).join('');
+    }
+
+    function deleteNote(noteId) {
+        let notes = JSON.parse(localStorage.getItem('videoNotes') || '[]');
+        notes = notes.filter(note => note.id !== noteId);
+        localStorage.setItem('videoNotes', JSON.stringify(notes));
+        displayNotes(currentVideoId);
+    }
+
+    function seekToNote(timestamp) {
+        if (videoPlayer) {
+            videoPlayer.currentTime = timestamp;
+            videoPlayer.play();
+        }
+    }
+</script>
+</body>
+
+</html>

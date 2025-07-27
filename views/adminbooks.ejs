@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Book Management - Admin Dashboard</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* ===== Admin Dashboard Styles ===== */
+        :root {
+            --admin-primary: #dc3545;
+            --admin-primary-dark: #c82333;
+            --admin-secondary: #1cc88a;
+            --admin-light: #f8f9fc;
+            --admin-dark: #5a5c69;
+            --admin-gray: #858796;
+            --admin-light-gray: #eaecf4;
+            --admin-border: #e3e6f0;
+        }
+        
+        body {
+            background-color: #f8f9fc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+        }
+        
+        /* Navigation */
+        .admin-nav {
+            background: linear-gradient(135deg, var(--admin-primary) 0%, var(--admin-primary-dark) 100%);
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.2);
+        }
+        
+        .admin-nav .navbar-brand {
+            font-weight: 700;
+            font-size: 1.25rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .admin-nav .nav-link {
+            padding: 0.75rem 1rem;
+            border-radius: 0.35rem;
+            margin: 0 0.25rem;
+            transition: all 0.3s;
+        }
+        
+        .admin-nav .nav-link:not(.active):hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-pills .nav-link.active {
+            background-color: var(--admin-primary);
+            font-weight: 600;
+        }
+        
+        /* Cards */
+        .card {
+            border: none;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-header {
+            background-color: #fff;
+            border-bottom: 1px solid var(--admin-border);
+            padding: 1rem 1.25rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Filter Card */
+        .filter-card {
+            background: #fff;
+            border: 1px solid var(--admin-border);
+        }
+        
+        /* Tables */
+        .table {
+            margin-bottom: 0;
+        }
+        
+        .table th {
+            border-top: none;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            color: var(--admin-dark);
+            background-color: var(--admin-light-gray);
+        }
+        
+        .table td {
+            vertical-align: middle;
+            border-top: 1px solid var(--admin-border);
+        }
+        
+        .table-hover tbody tr:hover {
+            background-color: rgba(220, 53, 69, 0.05);
+        }
+        
+        /* Book Thumbnail */
+        .book-thumb {
+            width: 120px;
+            height: 70px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            position: relative;
+        }
+        
+        .book-thumb.notebook {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .book-thumb.textbook {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .book-type-icon {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            font-size: 12px;
+            background: rgba(0,0,0,0.3);
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        
+        /* Status Badges */
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            display: inline-block;
+        }
+        
+        .normal {
+            background-color: rgba(28, 200, 138, 0.1);
+            color: var(--admin-secondary);
+        }
+        
+        .flagged {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: var(--admin-primary);
+        }
+        
+        /* Type Badges */
+        .type-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .notebook {
+            background-color: rgba(245, 87, 108, 0.1);
+            color: #f5576c;
+        }
+        
+        .textbook {
+            background-color: rgba(79, 172, 254, 0.1);
+            color: #4facfe;
+        }
+        
+        /* Pagination */
+        .pagination {
+            margin-top: 1rem;
+        }
+        
+        .page-item.active .page-link {
+            background-color: var(--admin-primary);
+            border-color: var(--admin-primary);
+        }
+        
+        .page-link {
+            color: var(--admin-primary);
+        }
+        
+        .page-link:hover {
+            color: var(--admin-primary-dark);
+        }
+        
+        /* Page Header */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--admin-border);
+        }
+        
+        .page-header h1 {
+            font-weight: 700;
+            color: var(--admin-dark);
+            font-size: 1.8rem;
+            margin: 0;
+        }
+        
+        .page-header .btn {
+            border-radius: 0.3rem;
+            padding: 0.5rem 1rem;
+        }
+        
+        /* Book Modal */
+        .book-modal .modal-content {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .book-modal .modal-header {
+            background: var(--admin-primary);
+            color: white;
+        }
+        
+        .book-viewer {
+            width: 100%;
+            height: 600px;
+            border: none;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .table-responsive {
+                border: none;
+            }
+            
+            .filter-card .col-md-4 {
+                margin-bottom: 1rem;
+            }
+            
+            .filter-card .d-flex {
+                justify-content: flex-start !important;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .page-header .btn {
+                margin-top: 1rem;
+            }
+            
+            .book-thumb {
+                width: 80px;
+                height: 50px;
+            }
+        }
+    </style>
+    <% if (!Object.keys(currentFilter).length && !req.originalUrl.includes('?')) { %>
+    <script>
+      if (!window.location.search.includes('institute=')) {
+        window.location.replace("/admin/books?institute=all&teacher=all&type=all&page=1");
+      }
+    </script>
+  <% } %>
+</head>
+
+<body>
+    <!-- Admin Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark admin-nav shadow">
+        <div class="container">
+            <a class="navbar-brand" href="/admin/dashboard">
+                <i class="fas fa-user-shield me-2"></i>Admin Dashboard
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="adminNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/dashboard">
+                            <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/users">
+                            <i class="fas fa-users me-1"></i>Users
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/staff">
+                            <i class="fas fa-chalkboard-teacher me-1"></i>Staff
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/videos">
+                            <i class="fas fa-video me-1"></i>Videos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/admin/books">
+                            <i class="fas fa-book me-1"></i>Books
+                        </a>
+                    </li>
+                    <!-- <li class="nav-item">
+                        <a class="nav-link" href="/admin/contacts">
+                            <i class="fas fa-envelope me-1"></i>Contacts
+                        </a>
+                    </li> -->
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-1"></i>Avishkar@12
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="/admin/logout"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Book Management Content -->
+    <div class="container-fluid py-4">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>
+                <i class="fas fa-book me-2"></i>Book Management
+            </h1>
+            <!-- <a href="/admin/books/add" class="btn btn-primary">
+                <i class="fas fa-plus me-1"></i>Upload Book
+            </a> -->
+        </div>
+
+        <!-- Filters -->
+        <div class="card filter-card mb-4">
+            <div class="card-body">
+                <form method="GET" action="/admin/books" class="row g-3">
+                    <div class="col-md-3">
+                        <label for="institute" class="form-label">Institute</label>
+                        <select class="form-select" id="institute" name="institute">
+                            <option value="all" <%= currentFilter.institute === 'all' ? 'selected' : '' %>>All Institutes</option>
+                            <% institutes.forEach(institute => { %>
+                                <option value="<%= institute %>" <%= currentFilter.institute === institute ? 'selected' : '' %>>
+                                    <%= institute || 'No Institute' %>
+                                </option>
+                            <% }); %>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <label for="teacher" class="form-label">Teacher</label>
+                        <select class="form-select" id="teacher" name="teacher">
+                            <option value="all" <%= currentFilter.teacher === 'all' ? 'selected' : '' %>>All Teachers</option>
+                            <% teachers.forEach(teacher => { %>
+                                <option value="<%= teacher._id %>" <%= currentFilter.teacher === teacher._id.toString() ? 'selected' : '' %>>
+                                    <%= teacher.sname %> (<%= teacher.institute || 'No Institute' %>)
+                                </option>
+                            <% }); %>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <label for="type" class="form-label">Book Type</label>
+                        <select class="form-select" id="type" name="type">
+                            <option value="all" <%= currentFilter.type === 'all' ? 'selected' : '' %>>All Types</option>
+                            <option value="notebook" <%= currentFilter.type === 'notebook' ? 'selected' : '' %>>Notebook</option>
+                            <option value="textbook" <%= currentFilter.type === 'textbook' ? 'selected' : '' %>>Textbook</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-3 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary me-2">
+                            <i class="fas fa-filter me-1"></i>Filter
+                        </button>
+                        <a href="/admin/books" class="btn btn-outline-secondary">
+                            <i class="fas fa-times me-1"></i>Clear
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Books Table -->
+        <div class="card shadow">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold">
+                    Book Library 
+                    <span class="badge bg-primary ms-2"><%= pagination.total %> books</span>
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover" id="booksTable">
+                        <thead>
+                            <tr>
+                                <th>Book</th>
+                                <th>Title</th>
+                                <th>Author</th>
+                                <th>Description</th>
+                                <th>Type</th>
+                                <th>Teacher</th>
+                                <th>Institute</th>
+                                <th>Uploaded</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (books.length > 0) { %>
+                                <% books.forEach(book => { %>
+                                    <tr id="book-<%= book._id %>">
+                                        <td>
+                                            <div class="book-thumb <%= book.type %>">
+                                                <i class="fas <%= book.type === 'notebook' ? 'fa-book-open' : 'fa-book' %>"></i>
+                                                <span class="book-type-icon">
+                                                    <%= book.type === 'notebook' ? 'NB' : 'TB' %>
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="fw-bold"><%= book.title || book.bookName %></div>
+                                            <div class="small text-muted">ID: <%= book._id.toString().slice(-6) %></div>
+                                        </td>
+                                        <td>
+                                            <div class="fw-bold"><%= book.author || 'Unknown Author' %></div>
+                                        </td>
+                                        <td>
+                                            <div class="small text-truncate" style="max-width: 200px;" 
+                                                 title="<%= book.description || book.bookDescription %>">
+                                                <%= book.description || book.bookDescription || 'No description' %>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="type-badge <%= book.type %>">
+                                                <i class="fas <%= book.type === 'notebook' ? 'fa-book-open' : 'fa-book' %> me-1"></i>
+                                                <%= book.type %>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="fw-bold"><%= book.teacherId.sname %></div>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-light text-dark">
+                                                <%= book.teacherId.institute || 'No Institute' %>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <small class="text-muted">
+                                                <%= new Date(book.uploadDate).toLocaleDateString() %>
+                                            </small>
+                                        </td>
+                                        <td>
+                                            <span class="status-badge <%= book.isFlagged ? 'flagged' : 'normal' %>">
+                                                <i class="fas <%= book.isFlagged ? 'fa-flag' : 'fa-check-circle' %> me-1"></i>
+                                                <%= book.isFlagged ? 'Flagged' : 'Normal' %>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex">
+                                                <button class="btn btn-sm btn-outline-primary me-2" 
+                                                        onclick="viewBook('<%= book.filename %>', '<%= book.title || book.bookName %>')">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-info me-2" 
+                                                        onclick="downloadBook('<%= book.filename %>', '<%= book.title || book.bookName %>')">
+                                                    <i class="fas fa-download"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-warning me-2" 
+                                                        onclick="flagBook('<%= book._id %>', '<%= !book.isFlagged %>')">
+                                                    <i class="fas fa-flag"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-danger" 
+                                                        onclick="deleteBook('<%= book._id %>', '<%= book.title || book.bookName %>')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            <% } else { %>
+                                <tr>
+                                    <td colspan="10" class="text-center py-5">
+                                        <i class="fas fa-book fa-3x text-muted mb-3"></i>
+                                        <h5 class="text-muted">No books found</h5>
+                                        <p class="text-muted small">Try adjusting your filters</p>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <% if (pagination.pages > 1) { %>
+                    <nav aria-label="Books pagination">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item <%= pagination.page === 1 ? 'disabled' : '' %>">
+                                <a class="page-link" href="?page=<%= pagination.page - 1 %>&institute=<%= currentFilter.institute %>&teacher=<%= currentFilter.teacher %>&type=<%= currentFilter.type %>">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            </li>
+                            
+                            <% for (let i = Math.max(1, pagination.page - 2); i <= Math.min(pagination.pages, pagination.page + 2); i++) { %>
+                                <li class="page-item <%= pagination.page === i ? 'active' : '' %>">
+                                    <a class="page-link" href="?page=<%= i %>&institute=<%= currentFilter.institute %>&teacher=<%= currentFilter.teacher %>&type=<%= currentFilter.type %>">
+                                        <%= i %>
+                                    </a>
+                                </li>
+                            <% } %>
+                            
+                            <li class="page-item <%= pagination.page === pagination.pages ? 'disabled' : '' %>">
+                                <a class="page-link" href="?page=<%= pagination.page + 1 %>&institute=<%= currentFilter.institute %>&teacher=<%= currentFilter.teacher %>&type=<%= currentFilter.type %>">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <!-- Book Viewer Modal -->
+    <div class="modal fade book-modal" id="bookModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="bookModalTitle"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <iframe id="bookViewer" class="book-viewer" src=""></iframe>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="downloadFromModal">
+                        <i class="fas fa-download me-1"></i>Download
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title text-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Confirm Deletion
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to permanently delete the book <strong id="deleteBookTitle" class="text-danger"></strong>?</p>
+                    <div class="alert alert-warning small">
+                        <i class="fas fa-warning me-2"></i>
+                        This action cannot be undone. The book will be permanently removed.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDelete">
+                        <i class="fas fa-trash me-1"></i> Delete Book
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        let currentBookFile = null;
+
+        // Book viewer modal
+        function viewBook(filename, title) {
+            const bookModal = new bootstrap.Modal(document.getElementById('bookModal'));
+            const bookViewer = document.getElementById('bookViewer');
+            const modalTitle = document.getElementById('bookModalTitle');
+            
+            // Set book source
+            bookViewer.src = `/uploads/${encodeURIComponent(filename)}`;
+            modalTitle.textContent = title;
+            currentBookFile = filename;
+            
+            // Show modal
+            bookModal.show();
+        }
+
+        // Download book
+        function downloadBook(filename, title) {
+            const link = document.createElement('a');
+            link.href = `/uploads/${encodeURIComponent(filename)}`;
+            link.download = title || filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showAlert('Book download started!', 'success');
+        }
+
+        // Download from modal
+        document.getElementById('downloadFromModal').addEventListener('click', function() {
+            if (currentBookFile) {
+                const title = document.getElementById('bookModalTitle').textContent;
+                downloadBook(currentBookFile, title);
+            }
+        });
+        
+        // Book flagging
+        function flagBook(bookId, flagStatus) {
+            fetch(`/admin/books/${bookId}/flag`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ isFlagged: flagStatus })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Reload the row to update status
+                    const row = document.getElementById(`book-${bookId}`);
+                    if (row) {
+                        const statusBadge = row.querySelector('.status-badge');
+                        if (statusBadge) {
+                            statusBadge.className = flagStatus ? 
+                                'status-badge flagged' : 'status-badge normal';
+                                
+                            statusBadge.innerHTML = flagStatus ? 
+                                '<i class="fas fa-flag me-1"></i> Flagged' : 
+                                '<i class="fas fa-check-circle me-1"></i> Normal';
+                        }
+                    }
+                    showAlert(`Book ${flagStatus ? 'flagged' : 'unflagged'} successfully!`, 'success');
+                } else {
+                    showAlert(data.message || 'Error updating book status', 'danger');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('Error updating book status', 'danger');
+            });
+        }
+        
+        // Book deletion
+        let bookToDelete = null;
+        
+        function deleteBook(bookId, bookTitle) {
+            bookToDelete = bookId;
+            document.getElementById('deleteBookTitle').textContent = bookTitle;
+            new bootstrap.Modal(document.getElementById('deleteModal')).show();
+        }
+        
+        document.getElementById('confirmDelete').addEventListener('click', function() {
+            if (bookToDelete) {
+                fetch(`/admin/books/${bookToDelete}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Remove the row from table
+                        document.getElementById(`book-${bookToDelete}`).remove();
+                        
+                        // Show success message
+                        showAlert('Book deleted successfully!', 'success');
+                        
+                        // Close modal
+                        bootstrap.Modal.getInstance(document.getElementById('deleteModal')).hide();
+                    } else {
+                        showAlert(data.message || 'Error deleting book', 'danger');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showAlert('Error deleting book', 'danger');
+                });
+            }
+        });
+
+        // Show alert function
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            const container = document.querySelector('.container-fluid');
+            container.insertBefore(alertDiv, container.firstChild);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+
+        // Clear book viewer when modal is closed
+        document.getElementById('bookModal').addEventListener('hidden.bs.modal', function() {
+            document.getElementById('bookViewer').src = '';
+            currentBookFile = null;
+        });
+    </script>
+</body>
+</html>

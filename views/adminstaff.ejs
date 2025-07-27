@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Staff Management - Admin Dashboard</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* ===== Admin Dashboard Styles ===== */
+        :root {
+            --admin-primary: #dc3545;
+            --admin-primary-dark: #c82333;
+            --admin-secondary: #1cc88a;
+            --admin-light: #f8f9fc;
+            --admin-dark: #5a5c69;
+            --admin-gray: #858796;
+            --admin-light-gray: #eaecf4;
+            --admin-border: #e3e6f0;
+        }
+        
+        body {
+            background-color: #f8f9fc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+        }
+        
+        /* Navigation */
+        .admin-nav {
+            background: linear-gradient(135deg, var(--admin-primary) 0%, var(--admin-primary-dark) 100%);
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.2);
+        }
+        
+        .admin-nav .navbar-brand {
+            font-weight: 700;
+            font-size: 1.25rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .admin-nav .nav-link {
+            padding: 0.75rem 1rem;
+            border-radius: 0.35rem;
+            margin: 0 0.25rem;
+            transition: all 0.3s;
+        }
+        
+        .admin-nav .nav-link:not(.active):hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-pills .nav-link.active {
+            background-color: var(--admin-primary);
+            font-weight: 600;
+        }
+        
+        /* Cards */
+        .card {
+            border: none;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-header {
+            background-color: #fff;
+            border-bottom: 1px solid var(--admin-border);
+            padding: 1rem 1.25rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Filter Card */
+        .filter-card {
+            background: #fff;
+            border: 1px solid var(--admin-border);
+        }
+        
+        /* Tables */
+        .table {
+            margin-bottom: 0;
+        }
+        
+        .table th {
+            border-top: none;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            color: var(--admin-dark);
+            background-color: var(--admin-light-gray);
+        }
+        
+        .table td {
+            vertical-align: middle;
+            border-top: 1px solid var(--admin-border);
+        }
+        
+        .table-hover tbody tr:hover {
+            background-color: rgba(220, 53, 69, 0.05);
+        }
+        
+        /* Staff Avatar */
+        .staff-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-weight: bold;
+        }
+        
+        /* Status Badges */
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            display: inline-block;
+        }
+        
+        .verified {
+            background-color: rgba(28, 200, 138, 0.1);
+            color: var(--admin-secondary);
+        }
+        
+        .unverified {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: var(--admin-primary);
+        }
+        
+        /* Pagination */
+        .pagination {
+            margin-top: 1rem;
+        }
+        
+        .page-item.active .page-link {
+            background-color: var(--admin-primary);
+            border-color: var(--admin-primary);
+        }
+        
+        .page-link {
+            color: var(--admin-primary);
+        }
+        
+        .page-link:hover {
+            color: var(--admin-primary-dark);
+        }
+        
+        /* Page Header */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--admin-border);
+        }
+        
+        .page-header h1 {
+            font-weight: 700;
+            color: var(--admin-dark);
+            font-size: 1.8rem;
+            margin: 0;
+        }
+        
+        .page-header .btn {
+            border-radius: 0.3rem;
+            padding: 0.5rem 1rem;
+        }
+        
+        /* Badges */
+        .badge {
+            padding: 0.5em 0.8em;
+            font-weight: 600;
+            border-radius: 0.3rem;
+        }
+        
+        .badge.bg-primary {
+            background-color: var(--admin-primary) !important;
+        }
+        
+        /* Hidden row style */
+        tr.hidden-row {
+            opacity: 0.5;
+            background-color: #f8f9fa !important;
+        }
+        
+        /* Tooltip styles */
+        .tooltip-inner {
+            max-width: 200px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .table-responsive {
+                border: none;
+            }
+            
+            .filter-card .col-md-4 {
+                margin-bottom: 1rem;
+            }
+            
+            .filter-card .d-flex {
+                justify-content: flex-start !important;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .page-header .btn {
+                margin-top: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Admin Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark admin-nav shadow">
+        <div class="container">
+            <a class="navbar-brand" href="/admin/dashboard">
+                <i class="fas fa-user-shield me-2"></i>Admin Dashboard
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="adminNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/dashboard">
+                            <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/users">
+                            <i class="fas fa-users me-1"></i>Users
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/admin/staff">
+                            <i class="fas fa-chalkboard-teacher me-1"></i>Staff
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/videos">
+                            <i class="fas fa-video me-1"></i>Videos
+                        </a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="/admin/books"><i class="fas fa-book me-1"></i>Books</a></li>
+                    <!-- <li class="nav-item">
+                        <a class="nav-link" href="/admin/contacts">
+                            <i class="fas fa-envelope me-1"></i>Contacts
+                        </a>
+                    </li> -->
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-1"></i>Admin User
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="/admin/logout"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Staff Management Content -->
+    <div class="container-fluid py-4">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>
+                <i class="fas fa-chalkboard-teacher me-2"></i>Staff Management
+            </h1>
+            <div>
+                <a href="/admin/staff/export" class="btn btn-success me-2">
+                    <i class="fas fa-file-export me-1"></i>Export
+                </a>
+                <!-- <a href="/admin/staff/add" class="btn btn-primary">
+                    <i class="fas fa-plus me-1"></i>Add Staff
+                </a> -->
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="card filter-card mb-4">
+            <div class="card-body">
+                <form method="GET" action="/admin/staff" class="row g-3">
+                    <div class="col-md-4">
+                        <label for="institute" class="form-label">Institute</label>
+                        <select class="form-select" id="institute" name="institute">
+                            <option value="all" <%= currentFilter.institute === 'all' ? 'selected' : '' %>>All Institutes</option>
+                            <% institutes.forEach(institute => { %>
+                                <option value="<%= institute %>" <%= currentFilter.institute === institute ? 'selected' : '' %>>
+                                    <%= institute || 'No Institute' %>
+                                </option>
+                            <% }); %>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <label for="verified" class="form-label">Verification Status</label>
+                        <select class="form-select" id="verified" name="verified">
+                            <option value="all" <%= currentFilter.verified === 'all' ? 'selected' : '' %>>All Staff</option>
+                            <option value="true" <%= currentFilter.verified === 'true' ? 'selected' : '' %>>Verified</option>
+                            <option value="false" <%= currentFilter.verified === 'false' ? 'selected' : '' %>>Unverified</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary me-2">
+                            <i class="fas fa-filter me-1"></i>Filter
+                        </button>
+                        <a href="/admin/staff" class="btn btn-outline-secondary">
+                            <i class="fas fa-times me-1"></i>Clear
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Staff Table -->
+        <div class="card shadow">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold">
+                    Staff Members 
+                    <span class="badge bg-primary ms-2"><%= pagination.total %> total</span>
+                    <span class="badge bg-secondary ms-2"><%= hiddenCount || 0 %> hidden</span>
+                </h6>
+                <button id="toggleHiddenBtn" class="btn btn-sm btn-outline-secondary show-hidden-btn" 
+                        data-bs-toggle="tooltip" title="Toggle hidden staff">
+                    <i class="fas fa-eye-slash me-1"></i> Hide Hidden
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover" id="staffTable">
+                        <thead>
+                            <tr>
+                                <th>Staff Member</th>
+                                <th>Email</th>
+                                <th>Institute</th>
+                                <th>Status</th>
+                                <th>Registered</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (staff.length > 0) { %>
+                                <% staff.forEach(member => { %>
+                                    <tr id="staff-<%= member._id %>" class="<%= member.hidden ? 'hidden-row' : '' %>">
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="staff-avatar me-3">
+                                                    <%= member.sname.charAt(0).toUpperCase() %>
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold"><%= member.sname %></div>
+                                                    <div class="small text-muted">ID: <%= member._id.toString().slice(-6) %></div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><%= member.semail %></td>
+                                        <td>
+                                            <span class="badge bg-light text-dark">
+                                                <%= member.institute || 'No Institute' %>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="status-badge <%= member.isVerified ? 'verified' : 'unverified' %>">
+                                                <i class="fas <%= member.isVerified ? 'fa-check-circle' : 'fa-times-circle' %> me-1"></i>
+                                                <%= member.isVerified ? 'Verified' : 'Unverified' %>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <small class="text-muted"><%= new Date(member.createdAt).toLocaleDateString() %></small>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex">
+                                                <% if (!member.isVerified) { %>
+                                                    <button class="btn btn-sm btn-outline-success me-2 verify-btn" 
+                                                            data-bs-toggle="tooltip" title="Verify Staff"
+                                                            onclick="verifyStaff('<%= member._id %>', '<%= member.sname %>')">
+                                                        <i class="fas fa-check"></i>
+                                                    </button>
+                                                <% } %>
+                                                <button class="btn btn-sm btn-outline-danger delete-btn" 
+                                                        data-bs-toggle="tooltip" title="Delete Staff"
+                                                        onclick="deleteStaff('<%= member._id %>', '<%= member.sname %>')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-secondary ms-2 hide-btn <%= member.hidden ? 'd-none' : '' %>" 
+                                                        data-bs-toggle="tooltip" title="Hide Staff"
+                                                        onclick="toggleHideStaff('<%= member._id %>')">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-info ms-2 show-btn <%= !member.hidden ? 'd-none' : '' %>" 
+                                                        data-bs-toggle="tooltip" title="Show Staff"
+                                                        onclick="toggleHideStaff('<%= member._id %>')">
+                                                    <i class="fas fa-eye-slash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            <% } else { %>
+                                <tr>
+                                    <td colspan="6" class="text-center py-5">
+                                        <i class="fas fa-chalkboard-teacher fa-3x text-muted mb-3"></i>
+                                        <h5 class="text-muted">No staff members found</h5>
+                                        <p class="text-muted small">Try adjusting your filters</p>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <% if (pagination.pages > 1) { %>
+                    <nav aria-label="Staff pagination">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item <%= pagination.page === 1 ? 'disabled' : '' %>">
+                                <a class="page-link" href="?page=<%= pagination.page - 1 %>&institute=<%= currentFilter.institute %>&verified=<%= currentFilter.verified %>">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            </li>
+                            
+                            <% for (let i = Math.max(1, pagination.page - 2); i <= Math.min(pagination.pages, pagination.page + 2); i++) { %>
+                                <li class="page-item <%= pagination.page === i ? 'active' : '' %>">
+                                    <a class="page-link" href="?page=<%= i %>&institute=<%= currentFilter.institute %>&verified=<%= currentFilter.verified %>">
+                                        <%= i %>
+                                    </a>
+                                </li>
+                            <% } %>
+                            
+                            <li class="page-item <%= pagination.page === pagination.pages ? 'disabled' : '' %>">
+                                <a class="page-link" href="?page=<%= pagination.page + 1 %>&institute=<%= currentFilter.institute %>&verified=<%= currentFilter.verified %>">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <!-- Verification Modal -->
+    <div class="modal fade" id="verifyModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title text-success">
+                        <i class="fas fa-check-circle me-2"></i>
+                        Confirm Verification
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to verify staff member <strong id="verifyStaffName" class="text-success"></strong>?</p>
+                    <div class="alert alert-info small">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Staff member will receive a confirmation email and gain full access to the system.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" id="confirmVerify">
+                        <i class="fas fa-check me-1"></i> Verify Staff
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title text-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Confirm Deletion
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to permanently delete staff member <strong id="deleteStaffName" class="text-danger"></strong>?</p>
+                    <div class="alert alert-warning small">
+                        <i class="fas fa-warning me-2"></i>
+                        This action cannot be undone. All staff data will be permanently removed.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDelete">
+                        <i class="fas fa-trash me-1"></i> Delete Staff
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+    <script>
+        // Initialize tooltips
+        $(document).ready(function() {
+            $('[data-bs-toggle="tooltip"]').tooltip();
+            
+            // Initialize hidden rows
+            const hiddenStaff = JSON.parse(localStorage.getItem('hiddenStaff') || '[]');
+            hiddenStaff.forEach(id => {
+                $(`#staff-${id}`).addClass('hidden-row');
+            });
+        });
+
+        let staffToDelete = null;
+        let staffToVerify = null;
+        let hiddenStaffVisible = false;
+
+        function deleteStaff(staffId, staffName) {
+            staffToDelete = staffId;
+            document.getElementById('deleteStaffName').textContent = staffName;
+            new bootstrap.Modal(document.getElementById('deleteModal')).show();
+        }
+
+        function verifyStaff(staffId, staffName) {
+            staffToVerify = staffId;
+            document.getElementById('verifyStaffName').textContent = staffName;
+            new bootstrap.Modal(document.getElementById('verifyModal')).show();
+        }
+
+        function toggleHideStaff(staffId) {
+            const row = document.getElementById(`staff-${staffId}`);
+            const hideBtn = row.querySelector('.hide-btn');
+            const showBtn = row.querySelector('.show-btn');
+            const hiddenStaff = JSON.parse(localStorage.getItem('hiddenStaff') || '[]');
+            
+            if (row.classList.contains('hidden-row')) {
+                // Staff is currently hidden, show them
+                row.classList.remove('hidden-row');
+                hideBtn.classList.remove('d-none');
+                showBtn.classList.add('d-none');
+                localStorage.setItem('hiddenStaff', JSON.stringify(hiddenStaff.filter(id => id !== staffId)));
+            } else {
+                // Staff is currently visible, hide them
+                row.classList.add('hidden-row');
+                hideBtn.classList.add('d-none');
+                showBtn.classList.remove('d-none');
+                localStorage.setItem('hiddenStaff', JSON.stringify([...hiddenStaff, staffId]));
+            }
+            
+            // Update hidden count badge
+            const hiddenCount = document.querySelectorAll('.hidden-row').length;
+            document.querySelector('.badge.bg-secondary').textContent = hiddenCount;
+        }
+
+        // Toggle hidden staff visibility
+        document.getElementById('toggleHiddenBtn').addEventListener('click', function() {
+            const hiddenRows = document.querySelectorAll('.hidden-row');
+            
+            if (hiddenStaffVisible) {
+                // Hide the hidden rows
+                hiddenRows.forEach(row => {
+                    row.style.display = 'none';
+                });
+                this.innerHTML = '<i class="fas fa-eye me-1"></i> Show Hidden';
+            } else {
+                // Show the hidden rows
+                hiddenRows.forEach(row => {
+                    row.style.display = '';
+                });
+                this.innerHTML = '<i class="fas fa-eye-slash me-1"></i> Hide Hidden';
+            }
+            
+            hiddenStaffVisible = !hiddenStaffVisible;
+        });
+
+        document.getElementById('confirmDelete').addEventListener('click', function() {
+            if (staffToDelete) {
+                fetch(`/admin/staff/${staffToDelete}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Remove the row from table
+                        document.getElementById(`staff-${staffToDelete}`).remove();
+                        
+                        // Show success message
+                        showAlert('Staff member deleted successfully!', 'success');
+                        
+                        // Close modal
+                        bootstrap.Modal.getInstance(document.getElementById('deleteModal')).hide();
+                    } else {
+                        showAlert(data.message || 'Error deleting staff', 'danger');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showAlert('Error deleting staff member', 'danger');
+                });
+            }
+        });
+
+        document.getElementById('confirmVerify').addEventListener('click', function() {
+            if (staffToVerify) {
+                fetch(`/staffauthorize/${staffToVerify}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showAlert('Staff member verified successfully!', 'success');
+    bootstrap.Modal.getInstance(document.getElementById('verifyModal')).hide();
+    
+    // Refresh the page after a short delay
+    setTimeout(() => {
+        window.location.reload();
+    }, 1000);
+                    } else {
+                        showAlert(data.message || 'Error verifying staff', 'danger');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showAlert('Error verifying staff member', 'danger');
+                });
+            }
+        });
+
+        // Export to PDF functionality
+        document.querySelector('a[href="/admin/staff/export"]').addEventListener('click', function(e) {
+            e.preventDefault();
+            exportStaffToPDF();
+        });
+
+        function exportStaffToPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Title
+            doc.setFontSize(18);
+            doc.text('Staff Members List', 14, 15);
+            doc.setFontSize(12);
+            doc.text(`Generated on ${new Date().toLocaleDateString()}`, 14, 22);
+            
+            // Table data
+            const headers = [
+                ['Name', 'Email', 'Institute', 'Status', 'Registered']
+            ];
+            
+            const rows = [];
+            document.querySelectorAll('#staffTable tbody tr:not(.hidden-row)').forEach(row => {
+                const cells = row.querySelectorAll('td');
+                rows.push([
+                    cells[0].querySelector('.fw-bold')?.textContent || '',
+                    cells[1].textContent,
+                    cells[2].textContent.trim(),
+                    cells[3].textContent.trim(),
+                    cells[4].textContent.trim()
+                ]);
+            });
+            
+            // Add table
+            doc.autoTable({
+                head: headers,
+                body: rows,
+                startY: 30,
+                styles: {
+                    fontSize: 9,
+                    cellPadding: 2
+                },
+                headStyles: {
+                    fillColor: [220, 53, 69],
+                    textColor: 255,
+                    fontStyle: 'bold'
+                }
+            });
+            
+            // Save the PDF
+            doc.save(`staff_export_${new Date().toISOString().slice(0, 10)}.pdf`);
+        }
+
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            const container = document.querySelector('.container-fluid');
+            container.insertBefore(alertDiv, container.firstChild);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

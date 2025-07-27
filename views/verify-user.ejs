@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Verify User - Grad.LMS</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="/img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="/lib/animate/animate.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="/css/style.css" rel="stylesheet">
+    
+    <style>
+        .verification-card {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        
+        .verification-header {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .verification-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        
+        .user-details {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border-left: 4px solid #007bff;
+        }
+        
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #495057;
+            display: flex;
+            align-items: center;
+        }
+        
+        .detail-label i {
+            margin-right: 8px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .detail-value {
+            color: #6c757d;
+            font-weight: 500;
+        }
+        
+        .authorize-btn {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+        
+        .authorize-btn:hover {
+            background: linear-gradient(135deg, #218838, #1fa186);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+        
+        .decline-btn {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+            margin-left: 15px;
+        }
+        
+        .decline-btn:hover {
+            background: linear-gradient(135deg, #c82333, #bd2130);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+        }
+        
+        .action-buttons {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .alert-info {
+            background: #e7f3ff;
+            border: 1px solid #b8daff;
+            color: #0c5460;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar Start -->
+    <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
+        <a href="/" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
+            <h2 class="m-0 text-primary"><i class="fa fa-book me-3"></i> Grad.LMS</h2>
+        </a>
+    </nav>
+    <!-- Navbar End -->
+
+    <!-- Verification Content Start -->
+    <div class="container-fluid py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="verification-card">
+                        <div class="verification-header">
+                            <div class="verification-icon">🔍</div>
+                            <h2>User Verification Request</h2>
+                            <p class="mb-0">Please review the user details below</p>
+                        </div>
+                        
+                        <div class="card-body p-4">
+                            <div class="alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Action Required:</strong> A new user has registered and requires your approval to access the LMS platform.
+                            </div>
+                            
+                            <div class="user-details">
+                                <h5 class="mb-3">
+                                    <i class="fas fa-user me-2"></i>User Information
+                                </h5>
+                                
+                                <div class="detail-item">
+                                    <div class="detail-label">
+                                        <i class="fas fa-user"></i>Full Name
+                                    </div>
+                                    <div class="detail-value"><%= user.name %></div>
+                                </div>
+                                
+                                <div class="detail-item">
+                                    <div class="detail-label">
+                                        <i class="fas fa-envelope"></i>Email Address
+                                    </div>
+                                    <div class="detail-value"><%= user.email %></div>
+                                </div>
+                                
+                                <div class="detail-item">
+                                    <div class="detail-label">
+                                        <i class="fas fa-university"></i>Institute
+                                    </div>
+                                    <div class="detail-value"><%= user.institute %></div>
+                                </div>
+                                
+                                <div class="detail-item">
+                                    <div class="detail-label">
+                                        <i class="fas fa-calendar"></i>Registration Date
+                                    </div>
+                                    <div class="detail-value">
+                                        <%= user.registrationDate ? new Date(user.registrationDate).toLocaleDateString('en-US', { 
+                                            year: 'numeric', 
+                                            month: 'long', 
+                                            day: 'numeric',
+                                            hour: '2-digit',
+                                            minute: '2-digit'
+                                        }) : 'N/A' %>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                <strong>Important:</strong> By authorizing this user, you are granting them access to the LMS platform. Please ensure you recognize this user and their institute.
+                            </div>
+                            
+                            <div class="action-buttons">
+                                <form action="/authorize/<%= token %>" method="POST" style="display: inline;">
+                                    <button type="submit" class="authorize-btn">
+                                        <i class="fas fa-check me-2"></i>AUTHORIZE USER
+                                    </button>
+                                </form>
+                                
+                                <form action="/decline/<%= token %>" method="POST" style="display: inline;">
+                                    <button type="submit" class="decline-btn" onclick="return confirm('Are you sure you want to decline this user registration?')">
+                                        <i class="fas fa-times me-2"></i>DECLINE
+                                    </button>
+                                </form>
+                            </div>
+                            
+                            <div class="text-center mt-4">
+                                <small class="text-muted">
+                                    <i class="fas fa-clock me-1"></i>
+                                    This verification link will expire in 1 hour from the registration time.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Verification Content End -->
+
+    <!-- Footer Start -->
+    <div class="container-fluid bg-dark text-light footer pt-5 mt-5">
+        <div class="container py-5">
+            <div class="row g-5">
+                <div class="col-lg-12 text-center">
+                    <h4 class="text-white mb-3">Grad.LMS - Admin Panel</h4>
+                    <p class="mb-2">Secure user verification system</p>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="copyright">
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        &copy; <a class="border-bottom" href="#">Grad.LMS</a>, All Rights Reserved.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer End -->
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

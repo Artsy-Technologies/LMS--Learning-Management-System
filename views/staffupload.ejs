@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grad.LMS</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="lib/animate/animate.min.css" rel="stylesheet">
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="css/style.css" rel="stylesheet">
+    <style>
+        /* Define CSS custom properties */
+        :root {
+            --primary-color: #06BBCC;
+        }
+
+        .flash-message {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+        
+        .error {
+            background-color: white;
+            color: #FF4646;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-color), #4a90e2) !important;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            width: 100vw;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        .nav-buttons .btn {
+            margin: 0 0.5rem;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .nav-buttons .btn.active {
+            background-color: white;
+            color: var(--primary-color);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .nav-buttons .btn:not(.active) {
+            background-color: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .nav-buttons .btn:not(.active):hover {
+            background-color: white;
+            color: var(--primary-color);
+        }
+
+        .upload-card {
+            background: white;
+            border-radius: 20px;
+            border: none;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .upload-header {
+            background: linear-gradient(135deg, var(--primary-color), #4a90e2);
+            padding: 2.5rem 2rem;
+            text-align: center;
+            color: white;
+        }
+
+        .upload-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .upload-icon i {
+            font-size: 2.5rem;
+        }
+
+        .upload-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+
+        .upload-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        .upload-body {
+            padding: 2.5rem;
+        }
+
+        /* Content Type Selection */
+        .content-type-selector {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .type-option {
+            display: inline-block;
+            margin: 0 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .type-radio {
+            display: none;
+        }
+
+        .type-label {
+            background: #f8f9fa;
+            border: 3px solid #e9ecef;
+            border-radius: 15px;
+            padding: 1.5rem 2rem;
+            min-width: 180px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: block;
+        }
+
+        .type-label:hover {
+            border-color: var(--primary-color);
+            background: rgba(6, 187, 204, 0.05);
+        }
+
+        .type-radio:checked + .type-label {
+            border-color: var(--primary-color);
+            background: rgba(6, 187, 204, 0.1);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .type-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .type-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #2c3e50;
+            margin-bottom: 0.75rem;
+            display: block;
+        }
+
+        .form-label i {
+            color: var(--primary-color);
+        }
+
+        .file-upload-wrapper {
+            position: relative;
+        }
+
+        .file-upload-area {
+            border: 3px dashed #dee2e6;
+            border-radius: 15px;
+            padding: 3rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .file-upload-area:hover {
+            border-color: var(--primary-color);
+            background: rgba(6, 187, 204, 0.05);
+        }
+
+        .file-upload-area.dragover {
+            border-color: var(--primary-color);
+            background: rgba(6, 187, 204, 0.1);
+            transform: scale(1.02);
+        }
+
+        .file-upload-content h4 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .file-upload-content p {
+            color: #6c757d;
+            margin-bottom: 0.25rem;
+        }
+
+        .file-browse {
+            color: var(--primary-color);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .file-browse:hover {
+            text-decoration: underline;
+        }
+
+        .file-upload-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            opacity: 0.7;
+        }
+
+        .file-info {
+            font-size: 0.85rem;
+            color: #adb5bd;
+        }
+
+        .file-preview {
+            border: 2px solid var(--primary-color);
+            border-radius: 15px;
+            padding: 1.5rem;
+            background: rgba(6, 187, 204, 0.05);
+        }
+
+        .file-preview-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .file-preview-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+        }
+
+        .file-details {
+            flex: 1;
+        }
+
+        .file-name {
+            display: block;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.25rem;
+        }
+
+        .file-size {
+            display: block;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .file-remove {
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-remove:hover {
+            background: #c82333;
+            transform: scale(1.1);
+        }
+
+        .form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(6, 187, 204, 0.25);
+            outline: none;
+        }
+
+        .form-select {
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(6, 187, 204, 0.25);
+            outline: none;
+        }
+
+        .form-hint {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .char-count {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .upload-progress {
+            margin-top: 1rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 0.5rem;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: linear-gradient(90deg, var(--primary-color), #4a90e2);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        .progress-text {
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .upload-actions {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .btn-upload {
+            background: linear-gradient(135deg, var(--primary-color), #4a90e2);
+            color: white;
+            border: none;
+            padding: 1rem 3rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(6, 187, 204, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-upload:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(6, 187, 204, 0.4);
+        }
+
+        .btn-upload:active {
+            transform: translateY(0);
+        }
+
+        .btn-upload:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .upload-message {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 500;
+            animation: slideIn 0.3s ease;
+        }
+
+        .upload-message.success {
+            background: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+            border: 2px solid rgba(40, 167, 69, 0.2);
+        }
+
+        .upload-message.error {
+            background: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+            border: 2px solid rgba(220, 53, 69, 0.2);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .video-form, .book-form {
+            display: none;
+        }
+
+        .video-form.active, .book-form.active {
+            display: block;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .upload-header {
+                padding: 2rem 1.5rem;
+            }
+            
+            .upload-body {
+                padding: 1.5rem;
+            }
+            
+            .upload-title {
+                font-size: 1.5rem;
+            }
+            
+            .file-upload-area {
+                padding: 2rem 1rem;
+            }
+            
+            .btn-upload {
+                padding: 0.875rem 2rem;
+                font-size: 1rem;
+            }
+
+            .type-option {
+                display: block;
+                margin: 0.5rem 0;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Spinner Start -->
+    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- Spinner End -->
+    
+    <!-- Navbar Start -->
+    <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
+        <a href="/" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
+            <h2 class="m-0 text-primary"><i class="fa fa-book me-3"></i>Grad.LMS</h2>
+        </a>
+        <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav ms-auto p-4 p-lg-0">
+
+            </div>
+        </div>
+    </nav>
+    <!-- Navbar End -->
+
+    <!-- Header Start -->
+    <div class="container-fluid page-header py-5 mb-5">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-10 text-center">
+                    <h1 class="display-3 text-white animated slideInDown mb-4">Staff Portal</h1>
+                    <div class="nav-buttons d-flex justify-content-center flex-wrap mb-4">
+                        <a href="/staff/update" class="btn">
+                            <i class="fas fa-edit me-2"></i>Update
+                        </a>
+                        <a href="/staffupload" class="btn active">
+                            <i class="fas fa-upload me-2"></i>Upload
+                        </a>
+                        <a href="/staff/view" class="btn">
+                            <i class="fas fa-eye me-2"></i>View
+                        </a>
+                    </div>
+                    <p class="text-white fs-4 mt-2 mb-0">Upload Your Course Content Below</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Header End -->
+
+    <!-- Upload Card Start -->
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10">
+                <div class="upload-card shadow-lg">
+                    <div class="upload-header">
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-upload-alt" id="headerIcon"></i>
+                        </div>
+                        <h2 class="upload-title" id="headerTitle">Upload Your Content</h2>
+                        <p class="upload-subtitle" id="headerSubtitle">Share your knowledge with students around the world</p>
+                    </div>
+
+                    <div class="upload-body">
+                        <!-- Content Type Selection -->
+                        <div class="content-type-selector">
+                            <div class="type-option">
+                                <input type="radio" id="videoType" name="contentType" value="video" class="type-radio" checked>
+                                <label for="videoType" class="type-label">
+                                    <i class="fas fa-video type-icon"></i>
+                                    <span class="type-text">Video</span>
+                                </label>
+                            </div>
+                            <div class="type-option">
+                                <input type="radio" id="bookType" name="contentType" value="book" class="type-radio">
+                                <label for="bookType" class="type-label">
+                                    <i class="fas fa-book type-icon"></i>
+                                    <span class="type-text">Book</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Video Upload Form -->
+                        <form id="videoForm" class="video-form active" enctype="multipart/form-data">
+                            <!-- Video Upload Section -->
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-video me-2"></i>Video File
+                                </label>
+                                <div class="file-upload-wrapper">
+                                    <div class="file-upload-area" id="videoUploadArea">
+                                        <div class="file-upload-content">
+                                            <i class="fas fa-cloud-upload-alt file-upload-icon"></i>
+                                            <h4>Drag & drop your video here</h4>
+                                            <p>or <span class="file-browse">browse files</span></p>
+                                            <p class="file-info">Supports: MP4, AVI, MOV, WMV (Max: 500MB)</p>
+                                        </div>
+                                        <input type="file" id="video" name="video" accept="video/*" required hidden>
+                                    </div>
+                                    <div class="file-preview" id="videoPreview" style="display: none;">
+                                        <div class="file-preview-content">
+                                            <i class="fas fa-file-video file-preview-icon"></i>
+                                            <div class="file-details">
+                                                <span class="file-name" id="videoFileName"></span>
+                                                <span class="file-size" id="videoFileSize"></span>
+                                            </div>
+                                            <button type="button" class="file-remove" onclick="removeFile('video')">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                        <div class="upload-progress" id="videoProgress" style="display: none;">
+                                            <div class="progress-bar" id="videoProgressBar"></div>
+                                            <span class="progress-text" id="videoProgressText">0%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Video Details Section -->
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="videoName" class="form-label">
+                                        <i class="fas fa-tag me-2"></i>Course Title
+                                    </label>
+                                    <input type="text" id="videoName" name="videoName" class="form-control" 
+                                           placeholder="Enter an engaging title for your course" required>
+                                    <div class="form-hint">Make it descriptive and engaging to attract students</div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="videoDescription" class="form-label">
+                                    <i class="fas fa-align-left me-2"></i>Course Description
+                                </label>
+                                <textarea id="videoDescription" name="videoDescription" class="form-control" rows="4" 
+                                          placeholder="Describe what students will learn from this course..." required></textarea>
+                                <div class="form-hint">
+                                    <span class="char-count" id="videoCharCount">0</span>/500 characters
+                                </div>
+                            </div>
+
+                            <!-- Upload Button -->
+                            <div class="upload-actions">
+                                <button type="button" onclick="uploadContent('video')" class="btn-upload" id="videoUploadBtn">
+                                    <i class="fas fa-upload me-2"></i>
+                                    Upload Course
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- Book Upload Form -->
+                        <form id="bookForm" class="book-form" enctype="multipart/form-data">
+                            <!-- Book Upload Section -->
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-file-pdf me-2"></i>Book File (PDF)
+                                </label>
+                                <div class="file-upload-wrapper">
+                                    <div class="file-upload-area" id="bookUploadArea">
+                                        <div class="file-upload-content">
+                                            <i class="fas fa-cloud-upload-alt file-upload-icon"></i>
+                                            <h4>Drag & drop your PDF here</h4>
+                                            <p>or <span class="file-browse">browse files</span></p>
+                                            <p class="file-info">Supports: PDF only (Max: 100MB)</p>
+                                        </div>
+                                        <input type="file" id="book" name="book" accept=".pdf" required hidden>
+                                    </div>
+                                    <div class="file-preview" id="bookPreview" style="display: none;">
+                                        <div class="file-preview-content">
+                                            <i class="fas fa-file-pdf file-preview-icon"></i>
+                                            <div class="file-details">
+                                                <span class="file-name" id="bookFileName"></span>
+                                                <span class="file-size" id="bookFileSize"></span>
+                                            </div>
+                                            <button type="button" class="file-remove" onclick="removeFile('book')">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                        <div class="upload-progress" id="bookProgress" style="display: none;">
+                                            <div class="progress-bar" id="bookProgressBar"></div>
+                                            <span class="progress-text" id="bookProgressText">0%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Book Details Section -->
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="bookTitle" class="form-label">
+                                        <i class="fas fa-tag me-2"></i>Book Title
+                                    </label>
+                                    <input type="text" id="bookTitle" name="title" class="form-control" 
+                                           placeholder="Enter the book title" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="bookAuthor" class="form-label">
+                                        <i class="fas fa-user me-2"></i>Author
+                                    </label>
+                                    <input type="text" id="bookAuthor" name="author" class="form-control" 
+                                           placeholder="Enter the author's name" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="bookSubject" class="form-label">
+                                        <i class="fas fa-graduation-cap me-2"></i>Subject
+                                    </label>
+                                    <input type="text" id="bookSubject" name="subject" class="form-control" 
+                                           placeholder="Enter the subject (e.g., Mathematics, Physics)" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="bookType" class="form-label">
+                                        <i class="fas fa-bookmark me-2"></i>Book Type
+                                    </label>
+                                    <select id="bookTypeSelect" name="type" class="form-select" required>
+                                        <option value="">Select book type</option>
+                                        <option value="notebook">Notebook</option>
+                                        <option value="textbook">Textbook</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="bookDescription" class="form-label">
+                                    <i class="fas fa-align-left me-2"></i>Book Description
+                                </label>
+                                <textarea id="bookDescription" name="description" class="form-control" rows="4" 
+                                          placeholder="Describe the book content and what readers will learn..." required></textarea>
+                                <div class="form-hint">
+                                    <span class="char-count" id="bookCharCount">0</span>/500 characters
+                                </div>
+                            </div>
+
+                            <!-- Upload Button -->
+                            <div class="upload-actions">
+                                <button type="button" onclick="uploadContent('book')" class="btn-upload" id="bookUploadBtn">
+                                    <i class="fas fa-upload me-2"></i>
+                                    Upload Book
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- Success/Error Messages -->
+                        <div id="successMessage" class="upload-message" style="display: none;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Start -->
+    <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
+        <div class="container py-5">
+            <div class="row g-5">
+                <div class="col-lg-3 col-md-6">
+                    <h4 class="text-white mb-3">Quick Link</h4>
+                    <a class="btn btn-link" href="">About Us</a>
+                    <a class="btn btn-link" href="">Contact Us</a>
+                    <a class="btn btn-link" href="">Privacy Policy</a>
+                    <a class="btn btn-link" href="">Terms & Condition</a>
+                    <a class="btn btn-link" href="">FAQs & Help</a>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h4 class="text-white mb-3">Contact</h4>
+                    <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>123 abc,abc</p>
+                    <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+00 123-456-7890</p>
+                    <p class="mb-2"><i class="fa fa-envelope me-3"></i>xyz@example.com</p>
+                    <div class="d-flex pt-2">
+                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-twitter"></i></a>
+                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-facebook-f"></i></a>
+                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-youtube"></i></a>
+                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h4 class="text-white mb-3">Gallery</h4>
+                    <div class="row g-2 pt-2">
+                        <div class="col-4">
+                            <img class="img-fluid bg-light p-1" src="img/course-1.jpg" alt="">
+                        </div>
+                        <div class="col-4">
+                            <img class="img-fluid bg-light p-1" src="img/course-2.jpg" alt="">
+                        </div>
+                        <div class="col-4">
+                            <img class="img-fluid bg-light p-1" src="img/course-3.jpg" alt="">
+                        </div>
+                        <div class="col-4">
+                            <img class="img-fluid bg-light p-1" src="img/course-2.jpg" alt="">
+                        </div>
+                        <div class="col-4">
+                            <img class="img-fluid bg-light p-1" src="img/course-3.jpg" alt="">
+                        </div>
+                        <div class="col-4">
+                            <img class="img-fluid bg-light p-1" src="img/course-1.jpg" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="copyright">
+                <div class="row">
+                    <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                        &copy; <a class="border-bottom" href="#">Grad.LMS</a>, All Right Reserved. Designed By <a class="border-bottom" href="">ABC & team</a>
+                    </div>
+                    <div class="col-md-6 text-center text-md-end">
+                        <div class="footer-menu">
+                            <a href="">Home</a>
+                            <a href="">Cookies</a>
+                            <a href="">Help</a>
+                            <a href="">FQAs</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer End -->
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/wow/wow.min.js"></script>
+    <script src="lib/easing/easing.min.js"></script>
+    <script src="lib/waypoints/waypoints.min.js"></script>
+    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+    <!-- Template Javascript -->
+    <script src="js/main.js"></script>
+
+    <script>
+// Enhanced upload functionality with support for both video and book uploads
+document.addEventListener('DOMContentLoaded', function() {
+    // Content type selection
+    const contentTypeRadios = document.querySelectorAll('input[name="contentType"]');
+    const videoForm = document.querySelector('.video-form');
+    const bookForm = document.querySelector('.book-form');
+    const headerIcon = document.getElementById('headerIcon');
+    const headerTitle = document.getElementById('headerTitle');
+    const headerSubtitle = document.getElementById('headerSubtitle');
+
+    // Content type change handler
+    contentTypeRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (this.value === 'video') {
+                videoForm.classList.add('active');
+                bookForm.classList.remove('active');
+                headerIcon.className = 'fas fa-video';
+                headerTitle.textContent = 'Upload Your Course Video';
+                headerSubtitle.textContent = 'Share your knowledge with students around the world';
+            } else if (this.value === 'book') {
+                videoForm.classList.remove('active');
+                bookForm.classList.add('active');
+                headerIcon.className = 'fas fa-book';
+                headerTitle.textContent = 'Upload Your Book';
+                headerSubtitle.textContent = 'Share educational resources and knowledge';
+            }
+        });
+    });
+
+    // Initialize file upload functionality for both types
+    initializeFileUpload('video', 'video/*', 500 * 1024 * 1024, 'Please select a valid video file.', 'Video file size must be less than 500MB.');
+    initializeFileUpload('book', '.pdf', 100 * 1024 * 1024, 'Please select a valid PDF file.', 'PDF file size must be less than 100MB.');
+
+    // Character counters
+    setupCharacterCounter('videoDescription', 'videoCharCount');
+    setupCharacterCounter('bookDescription', 'bookCharCount');
+});
+
+function initializeFileUpload(type, acceptType, maxSize, typeError, sizeError) {
+    const fileUploadArea = document.getElementById(`${type}UploadArea`);
+    const fileInput = document.getElementById(type);
+    const filePreview = document.getElementById(`${type}Preview`);
+    const fileName = document.getElementById(`${type}FileName`);
+    const fileSize = document.getElementById(`${type}FileSize`);
+    
+    // File upload area click handler
+    fileUploadArea.addEventListener('click', () => fileInput.click());
+    
+    // Drag and drop functionality
+    fileUploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        fileUploadArea.classList.add('dragover');
+    });
+    
+    fileUploadArea.addEventListener('dragleave', () => {
+        fileUploadArea.classList.remove('dragover');
+    });
+    
+    fileUploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        fileUploadArea.classList.remove('dragover');
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            fileInput.files = files;
+            handleFileSelect(type, acceptType, maxSize, typeError, sizeError);
+        }
+    });
+    
+    // File input change handler
+    fileInput.addEventListener('change', () => handleFileSelect(type, acceptType, maxSize, typeError, sizeError));
+}
+
+function handleFileSelect(type, acceptType, maxSize, typeError, sizeError) {
+    const fileInput = document.getElementById(type);
+    const fileUploadArea = document.getElementById(`${type}UploadArea`);
+    const filePreview = document.getElementById(`${type}Preview`);
+    const fileName = document.getElementById(`${type}FileName`);
+    const fileSize = document.getElementById(`${type}FileSize`);
+    
+    const file = fileInput.files[0];
+    if (file) {
+        // Validate file type
+        if (type === 'video') {
+            if (!file.type.startsWith('video/')) {
+                showMessage(typeError, 'error');
+                return;
+            }
+        } else if (type === 'book') {
+            if (file.type !== 'application/pdf') {
+                showMessage(typeError, 'error');
+                return;
+            }
+        }
+        
+        // Validate file size
+        if (file.size > maxSize) {
+            showMessage(sizeError, 'error');
+            return;
+        }
+        
+        fileName.textContent = file.name;
+        fileSize.textContent = formatFileSize(file.size);
+        fileUploadArea.style.display = 'none';
+        filePreview.style.display = 'block';
+    }
+}
+
+function setupCharacterCounter(textareaId, counterId) {
+    const textarea = document.getElementById(textareaId);
+    const charCount = document.getElementById(counterId);
+    
+    textarea.addEventListener('input', function() {
+        const count = this.value.length;
+        charCount.textContent = count;
+        charCount.style.color = count > 450 ? '#dc3545' : 'var(--primary-color)';
+    });
+}
+
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+function removeFile(type) {
+    document.getElementById(type).value = '';
+    document.getElementById(`${type}UploadArea`).style.display = 'block';
+    document.getElementById(`${type}Preview`).style.display = 'none';
+    document.getElementById(`${type}Progress`).style.display = 'none';
+}
+
+function showMessage(message, type) {
+    const messageDiv = document.getElementById('successMessage');
+    messageDiv.className = `upload-message ${type}`;
+    messageDiv.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>
+        ${message}
+    `;
+    messageDiv.style.display = 'block';
+    
+    // Auto hide after 5 seconds for success messages
+    if (type === 'success') {
+        setTimeout(() => {
+            messageDiv.style.display = 'none';
+        }, 5000);
+    }
+}
+
+function uploadContent(type) {
+    const form = document.getElementById(`${type}Form`);
+    const formData = new FormData(form);
+    const button = document.getElementById(`${type}UploadBtn`);
+    const progressDiv = document.getElementById(`${type}Progress`);
+    const progressBar = document.getElementById(`${type}ProgressBar`);
+    const progressText = document.getElementById(`${type}ProgressText`);
+    
+    // Validation
+    if (!document.getElementById(type).files[0]) {
+        showMessage(`Please select a ${type} file.`, 'error');
+        return;
+    }
+    
+    // Type-specific validation
+    if (type === 'video') {
+        if (!document.getElementById('videoName').value.trim()) {
+            showMessage('Please enter a course title.', 'error');
+            return;
+        }
+        
+        if (!document.getElementById('videoDescription').value.trim()) {
+            showMessage('Please enter a course description.', 'error');
+            return;
+        }
+    } else if (type === 'book') {
+        if (!document.getElementById('bookTitle').value.trim()) {
+            showMessage('Please enter a book title.', 'error');
+            return;
+        }
+        
+        if (!document.getElementById('bookAuthor').value.trim()) {
+            showMessage('Please enter the author name.', 'error');
+            return;
+        }
+        
+        if (!document.getElementById('bookSubject').value.trim()) {
+            showMessage('Please enter the subject.', 'error');
+            return;
+        }
+        
+        if (!document.getElementById('bookTypeSelect').value) {
+            showMessage('Please select a book type.', 'error');
+            return;
+        }
+        
+        if (!document.getElementById('bookDescription').value.trim()) {
+            showMessage('Please enter a book description.', 'error');
+            return;
+        }
+    }
+    
+    // Show progress and disable button
+    button.disabled = true;
+    button.innerHTML = `<i class="fas fa-spinner fa-spin me-2"></i>Uploading...`;
+    progressDiv.style.display = 'block';
+    
+    // Simulate upload progress (replace with actual progress tracking)
+    let progress = 0;
+    const progressInterval = setInterval(() => {
+        progress += Math.random() * 15;
+        if (progress > 90) progress = 90;
+        progressBar.style.width = progress + '%';
+        progressText.textContent = Math.round(progress) + '%';
+    }, 200);
+    
+    // Determine upload endpoint
+    const uploadEndpoint = type === 'video' ? '/upload' : '/upload-book';
+    
+    fetch(uploadEndpoint, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        clearInterval(progressInterval);
+        progressBar.style.width = '100%';
+        progressText.textContent = '100%';
+        
+        setTimeout(() => {
+            if (data.success) {
+                showMessage(`🎉 ${type === 'video' ? 'Course' : 'Book'} uploaded successfully! You can upload another ${type}.`, 'success');
+                form.reset();
+                removeFile(type);
+                // Reset character counters
+                document.getElementById(`${type}CharCount`).textContent = '0';
+                if (type === 'book') {
+                    document.getElementById('bookTypeSelect').value = '';
+                }
+            } else {
+                showMessage(`❌ Error uploading ${type}. ${data.message || 'Please try again.'}`, 'error');
+            }
+        }, 500);
+    })
+    .catch(error => {
+        clearInterval(progressInterval);
+        showMessage(`❌ Error uploading ${type}. Please try again.`, 'error');
+        console.error(`Error uploading ${type}:`, error);
+    })
+    .finally(() => {
+        button.disabled = false;
+        button.innerHTML = `<i class="fas fa-upload me-2"></i>Upload ${type === 'video' ? 'Course' : 'Book'}`;
+        setTimeout(() => {
+            progressDiv.style.display = 'none';
+            progressBar.style.width = '0%';
+        }, 1000);
+    });
+}
+</script>
+</body>
+
+</html>

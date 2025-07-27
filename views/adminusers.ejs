@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>User Management - Admin Dashboard</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        /* ===== Admin Dashboard Styles ===== */
+        :root {
+            --admin-primary: #dc3545;
+            --admin-primary-dark: #c82333;
+            --admin-secondary: #1cc88a;
+            --admin-light: #f8f9fc;
+            --admin-dark: #5a5c69;
+            --admin-gray: #858796;
+            --admin-light-gray: #eaecf4;
+            --admin-border: #e3e6f0;
+        }
+        
+        body {
+            background-color: #f8f9fc;
+            font-family: 'Nunito', sans-serif;
+            color: #333;
+            overflow-x: hidden;
+        }
+        
+        /* Navigation */
+        .admin-nav {
+            background: linear-gradient(135deg, var(--admin-primary) 0%, var(--admin-primary-dark) 100%);
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.2);
+        }
+        
+        .admin-nav .navbar-brand {
+            font-weight: 700;
+            font-size: 1.25rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .admin-nav .nav-link {
+            padding: 0.75rem 1rem;
+            border-radius: 0.35rem;
+            margin: 0 0.25rem;
+            transition: all 0.3s;
+        }
+        
+        .admin-nav .nav-link:not(.active):hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .admin-nav .nav-link.active {
+            background-color: var(--admin-primary);
+            font-weight: 600;
+        }
+        
+        .admin-nav .dropdown-menu {
+            border: none;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.2);
+            border-radius: 0.35rem;
+            padding: 0.5rem 0;
+        }
+        
+        .admin-nav .dropdown-item {
+            padding: 0.5rem 1rem;
+        }
+        
+        .admin-nav .dropdown-item:hover {
+            background-color: var(--admin-light);
+            color: var(--admin-primary);
+        }
+        
+        /* Page Content */
+        .container-fluid {
+            padding: 20px;
+        }
+        
+        /* Cards */
+        .card {
+            border: none;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-header {
+            background-color: #fff;
+            border-bottom: 1px solid var(--admin-border);
+            padding: 1rem 1.25rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Filter Card */
+        .filter-card {
+            background: #fff;
+            border: 1px solid var(--admin-border);
+        }
+        
+        /* Tables */
+        .table {
+            margin-bottom: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        
+        .table th {
+            border-top: none;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            color: var(--admin-dark);
+            background-color: var(--admin-light-gray);
+        }
+        
+        .table td {
+            vertical-align: middle;
+            border-top: 1px solid var(--admin-border);
+        }
+        
+        .table-hover tbody tr:hover {
+            background-color: rgba(220, 53, 69, 0.05);
+        }
+        
+        /* User Avatar */
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-weight: bold;
+        }
+        
+        /* Status Badges */
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            display: inline-block;
+        }
+        
+        .verified {
+            background-color: rgba(28, 200, 138, 0.1);
+            color: var(--admin-secondary);
+        }
+        
+        .unverified {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: var(--admin-primary);
+        }
+        
+        /* Pagination */
+        .pagination {
+            margin-top: 1rem;
+        }
+        
+        .page-item.active .page-link {
+            background-color: var(--admin-primary);
+            border-color: var(--admin-primary);
+        }
+        
+        .page-link {
+            color: var(--admin-primary);
+        }
+        
+        .page-link:hover {
+            color: var(--admin-primary-dark);
+        }
+        
+        /* Modal */
+        .modal-header {
+            border-bottom: 1px solid var(--admin-border);
+            background-color: #fff;
+        }
+        
+        .modal-footer {
+            border-top: 1px solid var(--admin-border);
+            background-color: #fff;
+        }
+        
+        /* Page Header */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--admin-border);
+        }
+        
+        .page-header h1 {
+            font-weight: 700;
+            color: var(--admin-dark);
+            font-size: 1.8rem;
+            margin: 0;
+        }
+        
+        .page-header .btn {
+            border-radius: 0.3rem;
+            padding: 0.5rem 1rem;
+        }
+        
+        /* Badges */
+        .badge {
+            padding: 0.5em 0.8em;
+            font-weight: 600;
+            border-radius: 0.3rem;
+        }
+        
+        .badge.bg-primary {
+            background-color: var(--admin-primary) !important;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .table-responsive {
+                border: none;
+            }
+            
+            .filter-card .col-md-4 {
+                margin-bottom: 1rem;
+            }
+            
+            .filter-card .d-flex {
+                justify-content: flex-start !important;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .page-header .btn {
+                margin-top: 1rem;
+            }
+        }
+        /* Tooltip styles */
+    .tooltip-inner {
+        max-width: 200px;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.8rem;
+    }
+    
+    /* Hidden row style */
+    tr.hidden-row {
+        opacity: 0.5;
+        background-color: #f8f9fa !important;
+    }
+    
+    /* Show hidden rows button */
+    .show-hidden-btn {
+        margin-bottom: 1rem;
+    }
+    </style>
+</head>
+
+<body>
+    <!-- Admin Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark admin-nav shadow">
+        <div class="container">
+            <a class="navbar-brand" href="/admin/dashboard">
+                <i class="fas fa-user-shield me-2"></i>Admin Dashboard
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="adminNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/dashboard">
+                            <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/admin/users">
+                            <i class="fas fa-users me-1"></i>Users
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/staff">
+                            <i class="fas fa-chalkboard-teacher me-1"></i>Staff
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/videos">
+                            <i class="fas fa-video me-1"></i>Videos
+                        </a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="/admin/books"><i class="fas fa-book me-1"></i>Books</a></li>
+                    <!-- <li class="nav-item">
+                        <a class="nav-link" href="/admin/contacts">
+                            <i class="fas fa-envelope me-1"></i>Contacts
+                        </a>
+                    </li> -->
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-1"></i>Avishkar@12
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="/admin/logout"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- User Management Content -->
+    <div class="container-fluid py-4">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>
+                <i class="fas fa-users me-2"></i>User Management
+            </h1>
+            <a href="/admin/users/export" class="btn btn-success">
+                <i class="fas fa-file-export me-1"></i>Export
+            </a>
+        </div>
+
+        <!-- Filters -->
+        <div class="card filter-card mb-4">
+            <div class="card-body">
+                <form method="GET" action="/admin/users" class="row g-3">
+                    <div class="col-md-4">
+                        <label for="institute" class="form-label">Institute</label>
+                        <select class="form-select" id="institute" name="institute">
+                            <option value="all" <%= currentFilter.institute === 'all' ? 'selected' : '' %>>All Institutes</option>
+                            <% institutes.forEach(institute => { %>
+                                <option value="<%= institute %>" <%= currentFilter.institute === institute ? 'selected' : '' %>>
+                                    <%= institute || 'No Institute' %>
+                                </option>
+                            <% }); %>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <label for="verified" class="form-label">Verification Status</label>
+                        <select class="form-select" id="verified" name="verified">
+                            <option value="all" <%= currentFilter.verified === 'all' ? 'selected' : '' %>>All Users</option>
+                            <option value="true" <%= currentFilter.verified === 'true' ? 'selected' : '' %>>Verified</option>
+                            <option value="false" <%= currentFilter.verified === 'false' ? 'selected' : '' %>>Unverified</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary me-2">
+                            <i class="fas fa-filter me-1"></i>Filter
+                        </button>
+                        <a href="/admin/users" class="btn btn-outline-secondary">
+                            <i class="fas fa-times me-1"></i>Clear
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Users Table -->
+        <div class="card shadow">
+        
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+    <h6 class="m-0 font-weight-bold">
+        Users List 
+        <span class="badge bg-primary ms-2"><%= pagination.total %> total</span>
+        <span class="badge bg-secondary ms-2"><%= hiddenCount || 0 %> hidden</span>
+    </h6>
+    <button id="toggleHiddenBtn" class="btn btn-sm btn-outline-secondary show-hidden-btn" 
+            data-bs-toggle="tooltip" title="Toggle hidden users">
+        <i class="fas fa-eye me-1"></i> Hide Hidden
+    </button>
+</div>
+
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover" id="usersTable">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Email</th>
+                                <th>Institute</th>
+                                <th>Status</th>
+                                <th>Registered</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (users.length > 0) { %>
+                                <% users.forEach(user => { %>
+                                    <tr id="user-<%= user._id %>">
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="user-avatar me-3">
+                                                    <%= user.name.charAt(0).toUpperCase() %>
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold"><%= user.name %></div>
+                                                    <div class="small text-muted">ID: <%= user._id.toString().slice(-6) %></div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><%= user.email %></td>
+                                        <td>
+                                            <span class="badge bg-light text-dark">
+                                                <%= user.institute || 'No Institute' %>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="status-badge <%= user.isVerified ? 'verified' : 'unverified' %>">
+                                                <i class="fas <%= user.isVerified ? 'fa-check-circle' : 'fa-times-circle' %> me-1"></i>
+                                                <%= user.isVerified ? 'Verified' : 'Unverified' %>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <small class="text-muted"><%= new Date(user.createdAt).toLocaleDateString() %></small>
+                                        </td>
+      <td>
+    <div class="d-flex">
+        <% if (!user.isVerified) { %>
+            <!-- Show verify button for unverified users -->
+            <button class="btn btn-sm btn-outline-success me-2 verify-btn" 
+                    data-bs-toggle="tooltip" title="Verify User"
+                    onclick="verifyUser('<%= user._id %>', '<%= user.name %>')">
+                <i class="fas fa-check"></i>
+            </button>
+        <% } %>
+        
+        <!-- Always show delete button -->
+        <button class="btn btn-sm btn-outline-danger delete-btn" 
+                data-bs-toggle="tooltip" title="Delete User"
+                onclick="deleteUser('<%= user._id %>', '<%= user.name %>')">
+            <i class="fas fa-trash"></i>
+        </button>
+        
+        <!-- Hide/Show toggle button -->
+        <button class="btn btn-sm btn-outline-secondary ms-2 hide-btn <%= user.hidden ? 'd-none' : '' %>" 
+                data-bs-toggle="tooltip" title="Hide User"
+                onclick="toggleHideUser('<%= user._id %>')">
+            <i class="fas fa-eye"></i>
+        </button>
+        <button class="btn btn-sm btn-outline-info ms-2 show-btn <%= !user.hidden ? 'd-none' : '' %>" 
+                data-bs-toggle="tooltip" title="Show User"
+                onclick="toggleHideUser('<%= user._id %>')">
+            <i class="fas fa-eye-slash"></i>
+        </button>
+    </div>
+</td>
+                                    </tr>
+                                <% }); %>
+                            <% } else { %>
+                                <tr>
+                                    <td colspan="6" class="text-center py-5">
+                                        <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                                        <h5 class="text-muted">No users found</h5>
+                                        <p class="text-muted small">Try adjusting your filters</p>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <% if (pagination.pages > 1) { %>
+                    <nav aria-label="Users pagination">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item <%= pagination.page === 1 ? 'disabled' : '' %>">
+                                <a class="page-link" href="?page=<%= pagination.page - 1 %>&institute=<%= currentFilter.institute %>&verified=<%= currentFilter.verified %>">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            </li>
+                            
+                            <% for (let i = Math.max(1, pagination.page - 2); i <= Math.min(pagination.pages, pagination.page + 2); i++) { %>
+                                <li class="page-item <%= pagination.page === i ? 'active' : '' %>">
+                                    <a class="page-link" href="?page=<%= i %>&institute=<%= currentFilter.institute %>&verified=<%= currentFilter.verified %>">
+                                        <%= i %>
+                                    </a>
+                                </li>
+                            <% } %>
+                            
+                            <li class="page-item <%= pagination.page === pagination.pages ? 'disabled' : '' %>">
+                                <a class="page-link" href="?page=<%= pagination.page + 1 %>&institute=<%= currentFilter.institute %>&verified=<%= currentFilter.verified %>">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                <% } %>
+            </div>
+        </div>
+    </div>
+    <!-- modal for verification confirmation -->
+<div class="modal fade" id="verifyModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title text-success">
+                    <i class="fas fa-check-circle me-2"></i>
+                    Confirm Verification
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to verify user <strong id="verifyUserName" class="text-success"></strong>?</p>
+                <div class="alert alert-info small">
+                    <i class="fas fa-info-circle me-2"></i>
+                    User will receive a confirmation email and gain full access to the system.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-success" id="confirmVerify">
+                    <i class="fas fa-check me-1"></i> Verify User
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title text-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Confirm Deletion
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to permanently delete user <strong id="deleteUserName" class="text-danger"></strong>?</p>
+                    <div class="alert alert-warning small">
+                        <i class="fas fa-warning me-2"></i>
+                        This action cannot be undone. All user data will be permanently removed.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDelete">
+                        <i class="fas fa-trash me-1"></i> Delete User
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+    <script>
+        let userToDelete = null;
+
+        function deleteUser(userId, userName) {
+            userToDelete = userId;
+            document.getElementById('deleteUserName').textContent = userName;
+            new bootstrap.Modal(document.getElementById('deleteModal')).show();
+        }
+
+        document.getElementById('confirmDelete').addEventListener('click', function() {
+            if (userToDelete) {
+                fetch(`/admin/users/${userToDelete}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Remove the row from table
+                        document.getElementById(`user-${userToDelete}`).remove();
+                        
+                        // Show success message
+                        showAlert('User deleted successfully!', 'success');
+                        
+                        // Close modal
+                        bootstrap.Modal.getInstance(document.getElementById('deleteModal')).hide();
+                    } else {
+                        showAlert(data.message || 'Error deleting user', 'danger');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showAlert('Error deleting user', 'danger');
+                });
+            }
+        });
+
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            const container = document.querySelector('.container-fluid');
+            container.insertBefore(alertDiv, container.firstChild);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+       $(document).ready(function() {
+        $('[data-bs-toggle="tooltip"]').tooltip();
+        
+        // Initialize hidden rows
+        const hiddenUsers = JSON.parse(localStorage.getItem('hiddenUsers') || '[]');
+        hiddenUsers.forEach(id => {
+            $(`#user-${id}`).addClass('hidden-row');
+        });
+    });
+
+    let userToVerify = null;
+    
+    function verifyUser(userId, userName) {
+    userToVerify = userId;
+    document.getElementById('verifyUserName').textContent = userName;
+    new bootstrap.Modal(document.getElementById('verifyModal')).show();
+}
+
+document.getElementById('confirmVerify').addEventListener('click', function() {
+    if (userToVerify) {
+        fetch(`/authorize/${userToVerify}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+    showAlert('User verified successfully!', 'success');
+    bootstrap.Modal.getInstance(document.getElementById('verifyModal')).hide();
+    
+    // Refresh the page after a short delay
+    setTimeout(() => {
+        window.location.reload();
+    }, 1000);
+} else {
+                showAlert(data.message || 'Error verifying user', 'danger');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showAlert('Error verifying user', 'danger');
+        });
+    }
+});
+   function toggleHideUser(userId) {
+    const row = document.getElementById(`user-${userId}`);
+    const hideBtn = row.querySelector('.hide-btn');
+    const showBtn = row.querySelector('.show-btn');
+    const hiddenUsers = JSON.parse(localStorage.getItem('hiddenUsers') || '[]');
+    
+    if (row.classList.contains('hidden-row')) {
+        // User is currently hidden, show them
+        row.classList.remove('hidden-row');
+        hideBtn.classList.remove('d-none');
+        showBtn.classList.add('d-none');
+        localStorage.setItem('hiddenUsers', JSON.stringify(hiddenUsers.filter(id => id !== userId)));
+    } else {
+        // User is currently visible, hide them
+        row.classList.add('hidden-row');
+        hideBtn.classList.add('d-none');
+        showBtn.classList.remove('d-none');
+        localStorage.setItem('hiddenUsers', JSON.stringify([...hiddenUsers, userId]));
+    }
+    
+    // Update hidden count badge
+    const hiddenCount = document.querySelectorAll('.hidden-row').length;
+    document.querySelector('.badge.bg-secondary').textContent = hiddenCount;
+}
+   // Initialize with hidden rows visible by default
+let hiddenRowsVisible = true;
+
+document.getElementById('toggleHiddenBtn').addEventListener('click', function() {
+    const hiddenRows = document.querySelectorAll('.hidden-row');
+    
+    if (hiddenRowsVisible) {
+        // Hide the hidden rows
+        hiddenRows.forEach(row => {
+            row.style.display = 'none';
+        });
+        this.innerHTML = '<i class="fas fa-eye me-1"></i> Show Hidden';
+    } else {
+        // Show the hidden rows
+        hiddenRows.forEach(row => {
+            row.style.display = '';
+        });
+        this.innerHTML = '<i class="fas fa-eye-slash me-1"></i> Hide Hidden';
+    }
+    
+    hiddenRowsVisible = !hiddenRowsVisible;
+});
+
+// Initialize the button state on page load
+$(document).ready(function() {
+    // Start with hidden rows visible (default state)
+    const hiddenRows = document.querySelectorAll('.hidden-row');
+    hiddenRows.forEach(row => {
+        row.style.display = '';
+    });
+    
+    // Set button to "Hide Hidden" initially
+    document.getElementById('toggleHiddenBtn').innerHTML = '<i class="fas fa-eye me-1"></i> Hide Hidden';
+    hiddenRowsVisible = true;
+});
+
+    // Export to PDF functionality
+    document.querySelector('a[href="/admin/users/export"]').addEventListener('click', function(e) {
+        e.preventDefault();
+        exportToPDF();
+    });
+
+    function exportToPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        // Title
+        doc.setFontSize(18);
+        doc.text('Users List', 14, 15);
+        doc.setFontSize(12);
+        doc.text(`Generated on ${new Date().toLocaleDateString()}`, 14, 22);
+        
+        // Table data
+        const headers = [
+            ['Name', 'Email', 'Institute', 'Status', 'Registered']
+        ];
+        
+        const rows = [];
+        document.querySelectorAll('#usersTable tbody tr:not(.hidden-row)').forEach(row => {
+            const cells = row.querySelectorAll('td');
+            rows.push([
+                cells[0].querySelector('.fw-bold')?.textContent || '',
+                cells[1].textContent,
+                cells[2].textContent.trim(),
+                cells[3].textContent.trim(),
+                cells[4].textContent.trim()
+            ]);
+        });
+        
+        // Add table
+        doc.autoTable({
+            head: headers,
+            body: rows,
+            startY: 30,
+            styles: {
+                fontSize: 9,
+                cellPadding: 2
+            },
+            headStyles: {
+                fillColor: [220, 53, 69],
+                textColor: 255,
+                fontStyle: 'bold'
+            }
+        });
+        
+        // Save the PDF
+        doc.save(`users_export_${new Date().toISOString().slice(0, 10)}.pdf`);
+    }
+</script>
+</body>
+</html>

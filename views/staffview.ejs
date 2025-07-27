@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Grad.LMS - View Content</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #06BBCC;
+            --primary-hover: #0597a6;
+            --text-dark: #192b3c;
+            --text-muted: #6c757d;
+            --border-light: #e9ecef;
+            --shadow-light: 0 0 15px rgba(0,0,0,0.1);
+            --shadow-hover: 0 5px 20px rgba(0,0,0,0.15);
+            --book-gradient: linear-gradient(135deg, #3b4368 0%, #9479ae 100%);
+        }
+
+        body {
+            font-family: 'Heebo', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        /* Content Type Toggle */
+        .content-toggle {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-light);
+            text-align: center;
+        }
+
+        .toggle-buttons {
+            display: inline-flex;
+            background: #f8f9fa;
+            border-radius: 25px;
+            padding: 5px;
+            margin-bottom: 15px;
+        }
+
+        .toggle-btn {
+            padding: 12px 30px;
+            border: none;
+            background: transparent;
+            border-radius: 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+
+        .toggle-btn.active {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: 0 2px 10px rgba(6,187,204,0.3);
+        }
+
+        .course-item {
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: var(--shadow-light);
+            border-radius: 15px;
+            overflow: hidden;
+            background: white;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .course-item:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* Video Styles */
+        .video-preview {
+            position: relative;
+            height: 220px;
+            overflow: hidden;
+            background: linear-gradient(135deg, var(--primary-color), #5d7c9e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .video-preview video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.video-preview:hover .video-thumbnail {
+    opacity: 1 !important;
+}
+
+        .video-thumbnail {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(6,187,204,0.8), rgba(85, 95, 107, 0.8));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: white;
+        }
+
+        .video-thumbnail i.fa-play-circle {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        /* Book Styles */
+        .book-preview {
+            position: relative;
+            height: 220px;
+            overflow: hidden;
+            background: var(--book-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .book-thumbnail {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--book-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: white;
+        }
+
+        .book-thumbnail i.fa-book {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .book-thumbnail h6 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-align: center;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(95, 73, 73, 0.3);
+        }
+
+        .type-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 2;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .type-badge.notebook {
+            background: rgba(255, 193, 7, 0.95);
+            color: #856404;
+        }
+
+        .type-badge.textbook {
+            background: rgba(40, 167, 69, 0.95);
+            color: white;
+        }
+
+        .date-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.95);
+            color: var(--text-muted);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            z-index: 2;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .btn-watch, .btn-read {
+            border-radius: 25px;
+            z-index: 2;
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 8px 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-watch {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-watch:hover {
+            background-color: var(--primary-hover);
+            border-color: var(--primary-hover);
+            transform: translateX(-50%) translateY(-2px);
+        }
+
+        .btn-read {
+            background-color: #6f42c1;
+            border-color: #6f42c1;
+        }
+
+        .btn-read:hover {
+            background-color: #5a2d91;
+            border-color: #5a2d91;
+            transform: translateX(-50%) translateY(-2px);
+        }
+
+        .nav-buttons .btn {
+            margin: 0 0.5rem;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .nav-buttons .btn.active {
+            background-color: white;
+            color: var(--primary-color);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .nav-buttons .btn:not(.active) {
+            background-color: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .nav-buttons .btn:not(.active):hover {
+            background-color: white;
+            color: var(--primary-color);
+        }
+
+        .course-content {
+            padding: 25px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .course-title {
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+            font-weight: 700;
+            font-size: 1.25rem;
+            line-height: 1.4;
+        }
+
+        .course-title i {
+            color: var(--primary-color);
+            margin-right: 8px;
+        }
+
+        .course-title i.fa-book {
+            color: #6f42c1;
+        }
+
+        .stats-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            background: rgba(6,187,204,0.1);
+            color: var(--primary-color);
+            border-radius: 20px;
+            margin-right: 10px;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .stats-badge.book-badge {
+            background: rgba(111, 66, 193, 0.1);
+            color: #6f42c1;
+        }
+
+        .course-description {
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-top: auto;
+            font-size: 0.95rem;
+        }
+
+        .filter-container {
+            background: white;
+            padding: 25px;
+            align-items: center !important;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow-light);
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            border-radius: 25px;
+            border: 2px solid var(--border-light);
+            padding: 12px 50px 12px 20px;
+            transition: all 0.3s ease;
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(6,187,204,0.25);
+        }
+
+        .search-box i {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+
+        .form-select {
+            border-radius: 25px;
+            border: 2px solid var(--border-light);
+            padding: 12px 20px;
+        }
+
+        .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(6,187,204,0.25);
+        }
+.navbar {
+    padding-top: 1.5rem;
+    padding-bottom: 1.4rem;
+}
+
+        .navbar-brand h2 {
+            color: var(--primary-color) !important;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-color), #4a90e2);
+        }
+
+        .content-count-badge {
+            background: var(--primary-color);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-content {
+            border-radius: 15px;
+            border: none;
+        }
+
+        .modal-header {
+            border-bottom: 2px solid var(--border-light);
+            padding: 20px 25px;
+        }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        #videoPlayer {
+            border-radius: 10px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        /* Content type specific styles */
+        .content-item {
+            display: none;
+        }
+
+        .content-item.active {
+            display: block;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .course-item {
+                margin-bottom: 20px;
+            }
+            .nav-buttons .btn {
+                margin: 0.25rem;
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+            
+            .video-preview, .book-preview {
+                height: 180px;
+            }
+            
+            .video-thumbnail i.fa-play-circle,
+            .book-thumbnail i.fa-book {
+                font-size: 3rem;
+            }
+            
+            .filter-container {
+                padding: 20px;
+                align-items: center;
+            }
+
+            .toggle-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .toggle-btn {
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar Start -->
+    <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
+        <a href="/" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
+            <h2 class="m-0 text-primary"><i class="fa fa-book me-3"></i>Grad.LMS</h2>
+        </a>
+        <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav ms-auto p-4 p-lg-0">
+
+            </div>
+        </div>
+    </nav>
+    <!-- Navbar End -->
+
+    <!-- Header Section -->
+    <div class="container-fluid page-header py-5 mb-5">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-10 text-center">
+                    <h1 class="display-3 animated text-white mb-4">View Content</h1>
+                    <div class="nav-buttons d-flex justify-content-center flex-wrap mb-4">
+                        <a href="/staff/update" class="btn">
+                            <i class="fas fa-edit me-2"></i>Update
+                        </a>
+                        <a href="/staffupload" class="btn">
+                            <i class="fas fa-upload me-2"></i>Upload
+                        </a>
+                        <a href="/staff/view" class="btn active">
+                            <i class="fas fa-eye me-2"></i>View
+                        </a>
+                    </div>
+                    <p class="text-white fs-5 mt-3 mb-0">Browse Your Educational Content</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Type Toggle -->
+    <div class="container">
+        <div class="content-toggle">
+            <div class="toggle-buttons">
+                <button class="toggle-btn active" data-type="videos" onclick="switchContentType('videos')">
+                    <i class="fas fa-video me-2"></i>Videos
+                </button>
+                <button class="toggle-btn" data-type="books" onclick="switchContentType('books')">
+                    <i class="fas fa-book me-2"></i>Books
+                </button>
+            </div>
+            <p class="text-muted mb-0">Switch between videos and books to view different types of content</p>
+        </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="container py-5 align-items-center">
+        <div class="filter-container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 col-md-6 mb-3 mb-md-0">
+                    <div class="search-box">
+                        <input type="text" class="form-control form-control-lg" id="searchInput" placeholder="Search content by name...">
+                        <i class="fas fa-search"></i>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 mb-3 mb-md-0">
+                    <select class="form-select form-select-lg" id="sortSelect">
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                        <option value="name">Name (A-Z)</option>
+                    </select>
+                </div>
+                <div class="col-lg-2 col-md-2">
+                    <div class="d-flex justify-content-end">
+                        <span class="content-count-badge">
+                            <i class="fas fa-video" id="countIcon"></i>
+                            <span id="contentCount">0</span> <span id="countLabel">Videos</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Start -->
+        <div class="container-xxl category">
+            <div class="container">
+                <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+                    <h1 class="mb-5" id="contentTitle">Your Videos</h1>
+                </div>
+                <div class="row g-4" id="contentContainer">
+                    <!-- Videos Section -->
+                    <% if (typeof videos !== 'undefined' && videos.length > 0) { %>
+                        <% videos.forEach(function(video, index) { %>
+                            <div class="col-lg-4 col-md-6 content-item video-item active" 
+                                 data-name="<%= (video.title || video.videoName || '').toLowerCase() %>"
+                                 data-date="<%= video.createdAt || video.uploadDate || new Date() %>"
+                                 data-teacher="<%= video.teacherId && video.teacherId.sname ? video.teacherId.sname : '' %>"
+                                 data-type="video">
+                                <div class="course-item">
+                                   <div class="video-preview">
+    <% if (video.filename) { %>
+        <video src="/uploads/<%= video.filename %>#t=0.5" 
+               preload="metadata" 
+               muted 
+               playsinline 
+               style="width: 100%; height: 100%; object-fit: cover; display: block;">
+            Your browser does not support HTML5 video.
+        </video>
+        <div class="video-thumbnail" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(6,187,204,0.3); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease;">
+            <i class="fas fa-play-circle" style="font-size: 4rem; color: white;"></i>
+        </div>
+    <% } else { %>
+        <div class="video-thumbnail">
+            <i class="fas fa-play-circle"></i>
+            <h6>No Video Available</h6>
+        </div>
+    <% } %>
+    
+    <span class="date-badge">
+        <i class="far fa-calendar-alt me-1"></i>
+        <%= (video.createdAt || video.uploadDate) ? new Date(video.createdAt || video.uploadDate).toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric' 
+        }) : 'N/A' %>
+    </span>
+    
+    <% if (video.filename) { %>
+        <button class="btn btn-watch btn-sm" onclick="playVideo('<%= video.filename %>')">
+            <i class="fas fa-play me-2"></i>Watch Now
+        </button>
+    <% } %>
+</div>
+                                    
+                                    <div class="course-content">
+                                        <h5 class="course-title">
+                                            <i class="fas fa-play-circle"></i>
+                                            <%= video.title || video.videoName || 'Untitled Video' %>
+                                        </h5>
+                                        
+                                        <% if (video.teacherId && video.teacherId.sname) { %>
+                                            <p class="text-muted small mb-2 teacher-name">
+                                                <i class="fas fa-user me-1"></i>
+                                                By: <strong><%= video.teacherId.sname %></strong>
+                                            </p>
+                                        <% } %>
+                                        
+                                        <div class="mb-3">
+                                            <% if (video.views) { %>
+                                                <span class="stats-badge">
+                                                    <i class="fas fa-eye me-1"></i>
+                                                    <%= video.views %> views
+                                                </span>
+                                            <% } %>
+                                        </div>
+                                        
+                                        <p class="course-description">
+                                            <%= video.description || video.videoDescription || 'No description available.' %>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }); %>
+                    <% } %>
+
+                    <!-- Books Section -->
+                    <% if (typeof books !== 'undefined' && books.length > 0) { %>
+                        <% books.forEach(function(book, index) { %>
+                            <div class="col-lg-4 col-md-6 content-item book-item" 
+                                 data-name="<%= (book.title || book.bookName || '').toLowerCase() %>"
+                                 data-date="<%= book.createdAt || book.uploadDate || new Date() %>"
+                                 data-teacher="<%= book.teacherId && book.teacherId.sname ? book.teacherId.sname : '' %>"
+                                 data-type="book">
+                                <div class="course-item">
+                                    <div class="book-preview">
+                                        <div class="book-thumbnail">
+                                            <i class="fas fa-book"></i>
+                                            <h6><%= book.type ? book.type.charAt(0).toUpperCase() + book.type.slice(1) : 'Book' %></h6>
+                                        </div>
+                                        
+                                        <% if (book.type) { %>
+                                            <span class="type-badge <%= book.type %>">
+                                                <i class="fas fa-<%= book.type === 'notebook' ? 'sticky-note' : 'book-open' %> me-1"></i>
+                                                <%= book.type.charAt(0).toUpperCase() + book.type.slice(1) %>
+                                            </span>
+                                        <% } %>
+                                        
+                                        <span class="date-badge">
+                                            <i class="far fa-calendar-alt me-1"></i>
+                                            <%= (book.createdAt || book.uploadDate) ? new Date(book.createdAt || book.uploadDate).toLocaleDateString('en-US', { 
+                                                year: 'numeric', 
+                                                month: 'short', 
+                                                day: 'numeric' 
+                                            }) : 'N/A' %>
+                                        </span>
+                                        
+                                        <% if (book.filename) { %>
+                                            <button class="btn btn-read btn-sm" onclick="openBook('<%= book.filename %>')">
+                                                <i class="fas fa-book-open me-2"></i>Read Now
+                                            </button>
+                                        <% } %>
+                                    </div>
+                                    
+                                    <div class="course-content">
+                                        <h5 class="course-title">
+                                            <i class="fas fa-book"></i>
+                                            <%= book.title  || 'Untitled Book' %>
+                                        </h5>
+                                        
+                                        <% if (book.teacherId && book.teacherId.sname) { %>
+                                            <p class="text-muted small mb-2 teacher-name">
+                                                <i class="fas fa-user me-1"></i>
+                                                By: <strong><%= book.teacherId.sname %></strong>
+                                            </p>
+                                        <% } %>
+                                        
+                                        <div class="mb-3">
+                                            <% if (book.subject) { %>
+                                                <span class="stats-badge book-badge">
+                                                    <i class="fas fa-tag me-1"></i>
+                                                    <%= book.subject %>
+                                                </span>
+                                            <% } %>
+                                            <% if (book.author) { %>
+                                                <span class="stats-badge book-badge">
+                                                    <i class="fas fa-feather-alt me-1"></i>
+                                                    <%= book.author %>
+                                                </span>
+                                            <% } %>
+                                        </div>
+                                        
+                                        <p class="course-description">
+                                            <%= book.description || 'No description available.' %>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }); %>
+                    <% } %>
+
+                    <!-- Empty State -->
+                    <div class="col-12" id="emptyState" style="display: none;">
+                        <div class="empty-state">
+                            <i class="fas fa-search"></i>
+                            <h4>No Content Found</h4>
+                            <p>Try adjusting your search criteria or switch to a different content type.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Content End -->
+    </div>
+
+    <!-- Video Modal -->
+    <div class="modal fade" id="videoModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Course Video</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <video id="videoPlayer" class="w-100" controls>
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Start -->
+    <div class="container-fluid bg-dark text-light footer pt-5 mt-5">
+        <div class="container py-5">
+            <div class="row g-5">
+                <div class="col-lg-3 col-md-6">
+                    <h4 class="text-white mb-3">Quick Link</h4>
+                    <a class="btn btn-link text-light" href="/about">About Us</a>
+                    <a class="btn btn-link text-light" href="/contact">Contact Us</a>
+                    <a class="btn btn-link text-light" href="/contact">Privacy Policy</a>
+                    <a class="btn btn-link text-light" href="/about">Terms & Condition</a>
+                    <a class="btn btn-link text-light" href="/about">FAQs & Help</a>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h4 class="text-white mb-3">Contact</h4>
+                    <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>123 abc,abc</p>
+                    <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+91 123-456-1078</p>
+                    <p class="mb-2"><i class="fa fa-envelope me-3"></i>info@abc.com</p>
+                    <div class="d-flex pt-2">
+                        <a class="btn btn-outline-light btn-social me-2" href=""><i class="fab fa-twitter"></i></a>
+                        <a class="btn btn-outline-light btn-social me-2" href=""><i class="fab fa-facebook-f"></i></a>
+                        <a class="btn btn-outline-light btn-social me-2" href=""><i class="fab fa-youtube"></i></a>
+                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12">
+                    <h4 class="text-white mb-3">About Grad.LMS</h4>
+                    <p>Our Learning Management System provides comprehensive educational resources and interactive courses for students and professionals. Join us in the journey of continuous learning and skill development.</p>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="copyright">
+                <div class="row">
+                    <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                        &copy; <a class="border-bottom" href="#">Grad.LMS</a>, All Right Reserved.
+                    </div>
+                    <div class="col-md-6 text-center text-md-end">
+                        <div class="footer-menu">
+                            <a href="" class="text-light me-3">Home</a>
+                            <a href="" class="text-light me-3">Cookies</a>
+                            <a href="" class="text-light me-3">Help</a>
+                            <a href="" class="text-light">FQAs</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer End -->
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top" style="position: fixed; bottom: 25px; right: 25px; display: none; background-color: var(--primary-color); border-color: var(--primary-color);"><i class="bi bi-arrow-up"></i></a>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+let currentContentType = 'videos';
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Set default sort to newest first
+    document.getElementById('sortSelect').value = 'newest';
+    switchContentType('videos'); // Initialize with videos view
+    
+    loadVideoMetadata();
+    
+    // Setup event listeners
+    document.getElementById('searchInput').addEventListener('input', filterContent);
+    document.getElementById('sortSelect').addEventListener('change', sortContent);
+
+    // Back to top functionality
+    const backToTop = document.querySelector('.back-to-top');
+    if (backToTop) {
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 300) {
+                backToTop.style.display = 'block';
+            } else {
+                backToTop.style.display = 'none';
+            }
+        });
+
+        backToTop.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+});
+
+function switchContentType(type) {
+    currentContentType = type;
+    
+    // Update toggle buttons
+    document.querySelectorAll('.toggle-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.querySelector(`[data-type="${type}"]`).classList.add('active');
+    
+    // Show/hide content items
+    document.querySelectorAll('.content-item').forEach(item => {
+        if (type === 'videos' && item.classList.contains('video-item')) {
+            item.classList.add('active');
+            item.style.display = 'block';
+        } else if (type === 'books' && item.classList.contains('book-item')) {
+            item.classList.add('active');
+            item.style.display = 'block';
+        } else {
+            item.classList.remove('active');
+            item.style.display = 'none';
+        }
+    });
+    
+    // Update UI elements
+    const countIcon = document.getElementById('countIcon');
+    const countLabel = document.getElementById('countLabel');
+    const contentTitle = document.getElementById('contentTitle');
+    const searchInput = document.getElementById('searchInput');
+    
+    if (type === 'videos') {
+        countIcon.className = 'fas fa-video';
+        countLabel.textContent = 'Videos';
+        contentTitle.textContent = 'Your Videos';
+        searchInput.placeholder = 'Search videos by name...';
+    } else {
+        countIcon.className = 'fas fa-book';
+        countLabel.textContent = 'Books';
+        contentTitle.textContent = 'Your Books';
+        searchInput.placeholder = 'Search books by name...';
+    }
+    
+    // Clear search and apply filters
+    document.getElementById('searchInput').value = '';
+    sortContent();
+    updateContentCount();
+}
+
+function loadVideoMetadata() {
+    // Load video durations from video elements
+    document.querySelectorAll('video[src]').forEach(video => {
+        video.addEventListener('loadedmetadata', function() {
+            const duration = Math.floor(this.duration);
+            const videoCard = this.closest('.content-item');
+            
+            if (videoCard) {
+                // Update duration placeholders
+                const durationPlaceholders = videoCard.querySelectorAll('.duration-placeholder');
+                durationPlaceholders.forEach(placeholder => {
+                    if (duration && !isNaN(duration)) {
+                        const minutes = Math.floor(duration / 60);
+                        const seconds = Math.floor(duration % 60);
+                        placeholder.textContent = `${minutes}:${String(seconds).padStart(2, '0')} mins`;
+                    } else {
+                        placeholder.textContent = 'N/A';
+                    }
+                });
+            }
+        });
+    });
+}
+
+function updateContentCount() {
+    const visibleItems = document.querySelectorAll('.content-item.active:not([style*="display: none"])').length;
+    document.getElementById('contentCount').textContent = visibleItems;
+    
+    // Show/hide empty state
+    let emptyState = document.getElementById('emptyState');
+    const activeItems = document.querySelectorAll('.content-item.active');
+    
+    if (visibleItems === 0 && activeItems.length > 0) {
+        emptyState.style.display = 'block';
+    } else {
+        emptyState.style.display = 'none';
+    }
+}
+
+function filterContent() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+    const activeItems = document.querySelectorAll('.content-item.active');
+
+    activeItems.forEach(item => {
+        const name = item.dataset.name || '';
+        const teacher = item.dataset.teacher || '';
+        
+        const matchesSearch = name.includes(searchTerm) || teacher.toLowerCase().includes(searchTerm);
+        
+        item.style.display = matchesSearch ? 'block' : 'none';
+    });
+
+    updateContentCount();
+}
+
+function sortContent() {
+    const container = document.getElementById('contentContainer');
+    const sortBy = document.getElementById('sortSelect').value;
+    const activeItems = Array.from(document.querySelectorAll('.content-item.active'));
+
+    activeItems.sort((a, b) => {
+        switch(sortBy) {
+            case 'newest':
+                const dateA = new Date(a.dataset.date || 0);
+                const dateB = new Date(b.dataset.date || 0);
+                return dateB - dateA; // Newest first (descending)
+            case 'oldest':
+                const dateA2 = new Date(a.dataset.date || 0);
+                const dateB2 = new Date(b.dataset.date || 0);
+                return dateA2 - dateB2; // Oldest first (ascending)
+            case 'name':
+                return (a.dataset.name || '').localeCompare(b.dataset.name || '');
+            case 'teacher':
+                return (a.dataset.teacher || '').localeCompare(b.dataset.teacher || '');
+            default:
+                return 0;
+        }
+    });
+
+    // Re-append sorted items to container
+    activeItems.forEach(item => container.appendChild(item));
+    
+    updateContentCount();
+}
+
+function playVideo(filename) {
+    if (filename) {
+        const videoPlayer = document.getElementById('videoPlayer');
+        if (videoPlayer) {
+            videoPlayer.src = `/uploads/${filename}`;
+            videoPlayer.load();
+            new bootstrap.Modal(document.getElementById('videoModal')).show();
+        }
+    }
+}
+
+function openBook(filename) {
+    if (filename) {
+        // Open PDF in new tab/window
+        window.open(`/uploads/${filename}`, '_blank');
+    }
+}
+
+// Stop video when modal is closed
+const videoModal = document.getElementById('videoModal');
+if (videoModal) {
+    videoModal.addEventListener('hidden.bs.modal', function () {
+        const videoPlayer = document.getElementById('videoPlayer');
+        if (videoPlayer) {
+            videoPlayer.pause();
+        }
+    });
+}
+</script>
+</body>
+
+</html>

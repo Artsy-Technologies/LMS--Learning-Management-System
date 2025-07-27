@@ -1,0 +1,1428 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Grad.LMS</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+<style>
+   .book-preview {
+    position: relative;
+    height: 300px;
+    overflow: hidden;
+    border-radius: 8px 8px 0 0;
+    background-color: #f8f9fa;
+    display: flex;
+    flex-direction: column; /* Change to column layout */
+    align-items: center;
+    justify-content: center;
+}
+
+    .book-preview .pdf-icon {
+        font-size: 5rem;
+        color: #e74c3c;
+    }
+    .book-preview::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+    .book-preview:hover::after {
+        background: rgba(0,0,0,0.05);
+    }
+    .date-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(255, 255, 255, 0.9);
+        color: #666;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        z-index: 1;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .btn-read {
+        background-color: #06BBCC;
+        border-color: #06BBCC;
+        z-index: 1;
+    }
+    .btn-read:hover {
+        background-color: #0597a6;
+        border-color: #0597a6;
+    }
+    .institute-info {
+        background: linear-gradient(135deg, #06BBCC 0%, #0597a6 100%);
+        color: white;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+    .teacher-info {
+        font-size: 0.9rem;
+        margin-bottom: 5px;
+    }
+    .institute-name {
+        font-size: 0.85rem;
+        color: #6c757d;
+    }
+    /* Add to your existing CSS */
+#bookmark-btn {
+    margin-left: 10px;
+}
+
+#bookmark-btn.bookmarked {
+    color: #ffc107;
+}
+
+#bookmark-btn.bookmarked #bookmark-icon {
+    font-weight: 900; /* Makes the icon solid */
+}
+    .book-type-badge {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        font-size: 0.7rem;
+    }
+    .pdf-viewer-container {
+    width: 80%;
+    height: calc(100vh - 200px); /* Adjust based on your needs */
+    overflow: auto;
+    position: relative;
+    float: left;
+    background-color: #525659; /* PDF.js background color */
+}
+        
+        .pdf-notes-sidebar {
+            width: 20%;
+            height: 80vh;
+            float: right;
+            border: 1px solid #dee2e6;
+            border-left: none;
+            border-radius: 0 5px 5px 0;
+            background: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .pdf-notes-tabs {
+            display: flex;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .pdf-notes-tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            cursor: pointer;
+            background: #e9ecef;
+        }
+        
+        .pdf-notes-tab.active {
+            background: #f8f9fa;
+            font-weight: bold;
+            border-bottom: 2px solid #06BBCC;
+        }
+        
+        .pdf-notes-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+        }
+        
+        .notes-section, .bookmarks-section {
+            display: none;
+        }
+        
+        .notes-section.active, .bookmarks-section.active {
+            display: block;
+        }
+        
+        .note-item, .bookmark-item {
+            padding: 10px;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 5px;
+            border-left: 3px solid #06BBCC;
+        }
+        
+        .bookmark-item {
+            border-left-color: #ffc107;
+        }
+        
+        .note-page, .bookmark-page {
+            font-size: 0.8rem;
+            color: #06BBCC;
+            font-weight: bold;
+        }
+        
+        .bookmark-page {
+            color: #ffc107;
+        }
+        
+        .note-content {
+            margin: 5px 0;
+            font-size: 0.9rem;
+        }
+        
+        .note-date, .bookmark-date {
+            font-size: 0.7rem;
+            color: #6c757d;
+        }
+        
+        .note-actions, .bookmark-actions {
+            margin-top: 5px;
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        .page-bookmark-indicator {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 193, 7, 0.9);
+            color: #212529;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            z-index: 10;
+            display: none;
+        }
+        
+        /* Clearfix for floated elements */
+        .pdf-content-wrapper::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+        .pdf-controls-container {
+    background: white;
+    padding: 10px 15px;
+    border-bottom: 1px solid #dee2e6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+        /* Fullscreen adjustments */
+        .pdf-modal-fullscreen .pdf-viewer-container {
+            width: 100%;
+            border-radius: 0;
+        }
+        
+        .pdf-modal-fullscreen .pdf-notes-sidebar {
+            display: none;
+        }
+        
+        /* Scrollable canvas container */
+        .pdf-canvas-container {
+    padding: 20px;
+    text-align: center;
+}
+
+        
+       #pdf-canvas {
+    border: 1px solid #dee2e6;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    background: white;
+    max-width: 100%;
+}
+        
+        /* Fix for modal persistence */
+        .modal-backdrop {
+            z-index: 1040 !important;
+        }
+        .pdf-controls-container {
+    background: white;
+    padding: 10px 15px;
+    border-bottom: 1px solid #dee2e6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.pdf-navigation {
+    display: flex;
+    gap: 10px;
+}
+
+.pdf-zoom {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.pdf-page-info {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    font-size: 0.9rem;
+}
+
+.fullscreen-btn {
+    margin-left: 10px;
+}
+        /* Fix for read now button */
+        .book-cover-placeholder {
+    width: 100%;
+    flex: 1; /* Take up remaining space */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f1f1f1 0%, #e1e1e1 100%);
+    color: #666;
+}
+
+        .book-actions {
+    width: 100%;
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
+}
+    </style>
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- PDF.js for PDF rendering -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf_viewer.min.css">
+
+    <!-- Libraries Stylesheet -->
+    <link href="lib/animate/animate.min.css" rel="stylesheet">
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="css/style.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Spinner Start -->
+    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- Spinner End -->
+
+    <!-- Navbar Start -->
+    <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
+        <a href="/" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
+            <h2 class="m-0 text-primary"><i class="fa fa-book me-3"></i>Grad.LMS</h2>
+        </a>
+        <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav ms-auto p-4 p-lg-0">
+                <a href="/" class="nav-item nav-link">Home</a>
+                <a href="/about" class="nav-item nav-link">About</a>
+                <a href="/upload" class="nav-item nav-link">Courses</a>
+                <a href="/books" class="nav-item nav-link active">Books</a>
+            </div>
+        </div>
+    </nav>
+    <!-- Navbar End -->
+
+    <!-- Header Start -->
+    <div class="container-fluid bg-primary py-5 mb-5 page-header">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-10 text-center">
+                    <h1 class="display-3 text-white animated slideInDown">Books Library</h1>
+                    <% if (typeof user !== 'undefined' && user.institute) { %>
+                        <p class="text-white-50 mb-0">From <%= user.institute %></p>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Header End -->
+
+    <!-- Institute Info Section - Always visible when user has institute -->
+    <% if (typeof user !== 'undefined' && user.institute) { %>
+        <div class="container mb-5">
+            <div class="institute-info text-center wow fadeInUp" data-wow-delay="0.1s">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h4 class="mb-2">
+                            <i class="fas fa-university me-2"></i>
+                            Learning from <%= user.institute %>
+                        </h4>
+                        <p class="mb-0">Access PDF books from teachers in your institute</p>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-flex justify-content-center justify-content-md-end">
+                            <div class="text-center">
+                                <h3 class="mb-0" id="totalBooks">0</h3>
+                                <small>Available PDF Books</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <% } %>
+
+    <!-- Filter Section -->
+    <div class="container py-5">
+        <div class="wow fadeInUp bg-light rounded p-4 mb-5" data-wow-delay="0.1s">
+            <div class="row align-items-center">
+                <div class="col-md-3 mb-3 mb-md-0">
+                    <div class="position-relative">
+                        <input type="text" class="form-control" id="searchInput" placeholder="Search books...">
+                        <i class="fa fa-search position-absolute end-0 top-50 translate-middle-y me-3"></i>
+                    </div>
+                </div>
+                <div class="col-md-2 mb-3 mb-md-0">
+                    <select class="form-select" id="teacherFilter">
+                        <option value="">All Teachers</option>
+                        <% 
+                        // Filter books to only include those from teachers of the same institute as the student
+                        let instituteBooks = books;
+                        if (typeof user !== 'undefined' && user.institute) {
+                            instituteBooks = books.filter(b => 
+                                b.teacherId && 
+                                b.teacherId.institute && 
+                                b.teacherId.institute === user.institute
+                            );
+                        }
+                        
+                        // Get unique teachers from the filtered books
+                        const uniqueTeachers = [...new Set(instituteBooks
+                            .filter(b => b.teacherId && b.teacherId.sname)
+                            .map(b => b.teacherId.sname))];
+                        
+                        uniqueTeachers.forEach(function(teacher) { %>
+                            <option value="<%= teacher %>"><%= teacher %></option>
+                        <% }); %>
+                    </select>
+                </div>
+                <div class="col-md-2 mb-3 mb-md-0">
+                    <select class="form-select" id="subjectFilter">
+                        <option value="">All Subjects</option>
+                        <% 
+                        // Get unique subjects from the filtered books
+                        const uniqueSubjects = [...new Set(instituteBooks
+                            .filter(b => b.subject)
+                            .map(b => b.subject))];
+                        
+                        uniqueSubjects.forEach(function(subject) { %>
+                            <option value="<%= subject %>"><%= subject %></option>
+                        <% }); %>
+                    </select>
+                </div>
+                <div class="col-md-2 mb-3 mb-md-0">
+                    <select class="form-select" id="typeFilter">
+                        <option value="">All Types</option>
+                        <option value="textbook">Textbooks</option>
+                        <option value="notebook">Notebooks</option>
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex align-items-center">
+                    <div class="d-flex align-items-center gap-3 mx-auto">
+                        <span class="badge bg-primary rounded-pill px-3 py-2 fs-6">
+                            <i class="fa fa-file-pdf me-1"></i> <span id="bookCount">0</span> Books
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Books Start -->
+        <div class="container-xxl category">
+            <div class="container">
+                <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+                    <h6 class="section-title bg-white text-center text-primary px-3">Available PDF Books</h6>
+                    <h1 class="mb-5">Institute PDF Library</h1>
+                </div>
+                <div class="row g-4" id="booksContainer">
+                    <% if (typeof books !== 'undefined' && books.length > 0) { %>
+                        <% 
+                        // Only display books from teachers of the same institute
+                        let displayBooks = books;
+                        if (typeof user !== 'undefined' && user.institute) {
+                            displayBooks = books.filter(b => 
+                                b.teacherId && 
+                                b.teacherId.institute && 
+                                b.teacherId.institute === user.institute
+                            );
+                        }
+                        
+                        if (displayBooks.length > 0) {
+                            displayBooks.forEach(function(book, index) { 
+                                const bookTypeClass = book.type === 'textbook' ? 'bg-info' : 'bg-warning text-dark';
+                                const bookTypeIcon = book.type === 'textbook' ? 'fa-book' : 'fa-book-open';
+                        %>
+                                <div class="col-lg-4 col-md-6 book-item" 
+                                     data-name="<%= (book.title || '').toLowerCase() %>"
+                                     data-teacher="<%= book.teacherId?.sname || '' %>"
+                                     data-subject="<%= book.subject || '' %>"
+                                     data-type="<%= book.type || '' %>"
+                                     data-institute="<%= book.teacherId?.institute || '' %>">
+                                    <div class="course-item wow fadeInUp" data-wow-delay="0.<%= (index % 3) + 1 %>s">
+                                        <div class="position-relative overflow-hidden book-preview">
+    <div class="book-cover-placeholder">
+        <i class="fas fa-file-pdf pdf-icon"></i>
+        <h5 class="mt-3 text-center"><%= book.title %></h5>
+    </div>
+    
+    <span class="date-badge">
+        <i class="far fa-calendar-alt me-1"></i>
+        <%= new Date(book.uploadDate || book.createdAt).toLocaleString('en-US', { 
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        }) %>
+    </span>
+    
+    <span class="book-type-badge badge <%= bookTypeClass %>">
+        <i class="fas <%= bookTypeIcon %> me-1"></i>
+        <%= book.type === 'textbook' ? 'Textbook' : 'Notebook' %>
+    </span>
+    
+    <div class="book-actions">
+        <button onclick="openPdfViewer('<%= book._id %>', '<%= book.filename %>', '<%= book.title %>')" 
+                class="flex-shrink-0 btn btn-sm btn-primary px-3 btn-read" 
+                style="border-radius: 30px;">
+            <i class="fas fa-book-open me-2"></i>Read Now
+        </button>
+        <button onclick="downloadPdf('<%= book.filename %>')" 
+                class="flex-shrink-0 btn btn-sm btn-outline-secondary px-3" 
+                style="border-radius: 30px;">
+            <i class="fas fa-download me-2"></i>Download
+        </button>
+    </div>
+</div>
+                                        <div class="text-center p-4">
+                                            <h5 class="mb-3 book-title">
+                                                <i class="fas fa-file-pdf me-2 text-danger"></i><%= book.title  %>
+                                            </h5>
+                                            <% if (book.subject) { %>
+                                                <span class="badge bg-light text-dark mb-2">
+                                                    <i class="fas fa-tag me-1"></i>
+                                                    <%= book.subject %>
+                                                </span>
+                                            <% } %>
+                                            <% if (book.teacherId && book.teacherId.sname) { %>
+                                                <p class="text-muted teacher-info mb-1">
+                                                    <i class="fas fa-user me-1"></i>
+                                                    By: <strong><%= book.teacherId.sname %></strong>
+                                                </p>
+                                            <% } %>
+                                            <% if (book.teacherId && book.teacherId.institute) { %>
+                                                <p class="institute-name mb-2">
+                                                    <i class="fas fa-university me-1"></i>
+                                                    <%= book.teacherId.institute %>
+                                                </p>
+                                            <% } %>
+                                            <% if (book.description ) { %>
+                                                <p class="text-muted small mt-2">
+                                                    <%= (book.description ).substring(0, 100) %>
+                                                    <% if ((book.description ).length > 100) { %>...
+                                                    <% } %>
+                                                </p>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% });
+                        } else { %>
+                            <div class="col-12 text-center">
+                                <div class="empty-state py-5">
+                                    <i class="fas fa-book-open mb-3" style="font-size: 4rem; color: #6c757d;"></i>
+                                    <h4>No PDF books available from your institute</h4>
+                                    <p class="text-muted">There are currently no PDF books available from teachers in <%= user.institute %>.</p>
+                                    <p class="text-muted">Check back later for new content.</p>
+                                </div>
+                            </div>
+                        <% } %>
+                    <% } else { %>
+                        <div class="col-12 text-center">
+                            <div class="empty-state py-5">
+                                <i class="fas fa-book-open mb-3" style="font-size: 4rem; color: #6c757d;"></i>
+                                <h4>No PDF books available</h4>
+                                <p class="text-muted">Check back later for new content.</p>
+                            </div>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+        <!-- Books End -->
+
+        <!-- PDF Viewer Modal -->
+        <div class="modal fade" id="pdfModal" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="pdfModalTitle">PDF Viewer</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-0">
+    <!-- Controls Row - MOVED TO TOP -->
+    <div class="pdf-controls-container">
+        <div class="pdf-navigation">
+            <button class="btn btn-sm btn-outline-primary" id="prev-page">
+                <i class="fas fa-arrow-left"></i> Previous
+            </button>
+            <button class="btn btn-sm btn-outline-primary" id="next-page">
+                Next <i class="fas fa-arrow-right"></i>
+            </button>
+            <div class="pdf-actions">
+        <button id="bookmark-btn" class="btn btn-sm btn-outline-secondary" 
+                data-bs-toggle="tooltip" data-bs-placement="bottom" 
+                title="Bookmark this page">
+            <i id="bookmark-icon" class="far fa-bookmark"></i>
+        </button>
+    </div>
+        </div>
+        
+        <div class="pdf-page-info">
+            <span id="page-num">1</span>
+            <span>of</span>
+            <span id="page-count">0</span>
+        </div>
+        
+        <div class="pdf-zoom">
+            <button class="btn btn-sm btn-outline-secondary" id="zoom-out">
+                <i class="fas fa-search-minus"></i>
+            </button>
+            <button class="btn btn-sm btn-outline-secondary" id="zoom-in">
+                <i class="fas fa-search-plus"></i>
+            </button>
+            <select class="form-select form-select-sm" id="scale-select" style="width: 100px;">
+                <option value="0.5">50%</option>
+                <option value="0.75">75%</option>
+                <option value="1" selected>100%</option>
+                <option value="1.25">125%</option>
+                <option value="1.5">150%</option>
+            </select>
+            <button class="btn btn-sm btn-primary fullscreen-btn" id="fullscreen-btn">
+                <i class="fas fa-expand"></i> Fullscreen
+            </button>
+        </div>
+    </div>
+
+    <div class="pdf-content-wrapper">
+        <!-- PDF Viewer Area -->
+        <div class="pdf-viewer-container">
+            <div class="page-bookmark-indicator" id="pageBookmarkIndicator">
+                <i class="fas fa-bookmark"></i> Bookmarked
+            </div>
+            <div class="pdf-canvas-container">
+                <canvas id="pdf-canvas"></canvas>
+            </div>
+        </div>
+                            
+                            <div class="pdf-notes-sidebar">
+                                <div class="pdf-notes-tabs">
+                                    <div class="pdf-notes-tab active" data-tab="notes">Notes</div>
+                                    <div class="pdf-notes-tab" data-tab="bookmarks">Bookmarks</div>
+                                </div>
+                                <div class="pdf-notes-content">
+                                    <div class="notes-section active">
+                                        <h6>Page Notes</h6>
+                                        <div id="currentPageNotes">
+                                            <!-- Notes for current page will appear here -->
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <textarea id="noteInput" class="form-control" rows="3" placeholder="Write your note for this page..."></textarea>
+                                            <div class="d-flex justify-content-end mt-2">
+                                                <button class="btn btn-primary btn-sm" onclick="saveNote()">
+                                                    <i class="fas fa-save me-1"></i> Save Note
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        <h6>All Notes</h6>
+                                        <div id="notesList">
+                                            <!-- All notes will appear here -->
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="bookmarks-section">
+                                        <div id="bookmarksList">
+                                            <!-- Bookmarks will appear here -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Start -->
+    <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
+        <div class="container py-5">
+            <div class="row g-5 justify-content-center">
+                <div class="col-lg-3 col-md-6">
+                    <h4 class="text-white mb-3">Quick Link</h4>
+                    <a class="btn btn-link" href="">About Us</a>
+                    <a class="btn btn-link" href="">Contact Us</a>
+                    <a class="btn btn-link" href="">Privacy Policy</a>
+                    <a class="btn btn-link" href="">Terms & Condition</a>
+                    <a class="btn btn-link" href="">FAQs & Help</a>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h4 class="text-white mb-3">Contact</h4>
+                    <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>123 abc,abc</p>
+                    <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+91 123-456-1028</p>
+                    <p class="mb-2"><i class="fa fa-envelope me-3"></i>abc@abc.com</p>
+                    <div class="d-flex pt-2">
+                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-twitter"></i></a>
+                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-facebook-f"></i></a>
+                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-youtube"></i></a>
+                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <h4 class="text-white mb-3">Our Features</h4>
+                    <p class="mb-2"><i class="fa fa-check me-3"></i>100% Secure Platform</p>
+                    <p class="mb-2"><i class="fa fa-check me-3"></i>Extensive Book Library</p>
+                    <p class="mb-2"><i class="fa fa-check me-3"></i>Quality Educational Videos</p>
+                    <p class="mb-2"><i class="fa fa-check me-3"></i>Teacher-Student Connections</p>
+                    <p class="mb-2"><i class="fa fa-check me-3"></i>24/7 Learning Access</p>
+                </div> 
+            </div>
+        </div>
+        <div class="container">
+            <div class="copyright">
+                <div class="row">
+                    <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                        &copy; <a class="border-bottom" href="#">Grad.LMS</a>, All Right Reserved Designed By <a class="border-bottom">ABC & TEAM</a>
+                    </div>
+                    <div class="col-md-6 text-center text-md-end">
+                        <div class="footer-menu">
+                            <a href="">Home</a>
+                            <a href="">Cookies</a>
+                            <a href="">Help</a>
+                            <a href="">FQAs</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer End -->
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/wow/wow.min.js"></script>
+    <script src="lib/easing/easing.min.js"></script>
+    <script src="lib/waypoints/waypoints.min.js"></script>
+    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="js/main.js"></script>
+    
+   <script>
+  // Set the worker path for PDF.js
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
+
+// Initialize variables
+let currentBookId = null;
+let pdfModal = null; // Will be initialized later
+let currentPdfDoc = null;
+let currentPageNum = 1;
+let currentPageRendering = false;
+let currentPageNumPending = null;
+let currentBookmarks = [];
+let isCurrentPageBookmarked = false;
+let scale = 1.5; // Default zoom level
+let isFullscreen = false;
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize modal
+    pdfModal = new bootstrap.Modal(document.getElementById('pdfModal'));
+    
+    // Set up event listeners
+    document.getElementById('prev-page').addEventListener('click', previousPage);
+    document.getElementById('next-page').addEventListener('click', nextPage);
+    document.getElementById('zoom-out').addEventListener('click', zoomOut);
+    document.getElementById('zoom-in').addEventListener('click', zoomIn);
+    document.getElementById('scale-select').addEventListener('change', changeScale);
+    document.getElementById('fullscreen-btn').addEventListener('click', toggleFullscreen);
+    const bookmarkBtn = document.getElementById('bookmark-btn');
+    if (bookmarkBtn) {
+        new bootstrap.Tooltip(bookmarkBtn);
+        bookmarkBtn.addEventListener('click', toggleBookmark);
+    }
+    // Initialize tabs
+    document.querySelectorAll('.pdf-notes-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            switchTab(this.dataset.tab);
+        });
+    });
+});
+
+function toggleBookmark() {
+    if (isCurrentPageBookmarked) {
+        removeBookmark();
+    } else {
+        addBookmark();
+    }
+}
+
+// Improved openPdfViewer function
+function openPdfViewer(bookId, filename, title) {
+    currentBookId = bookId;
+    document.getElementById('pdfModalTitle').textContent = title;
+    
+    // Reset modal state
+    document.getElementById('page-num').textContent = '1';
+    document.getElementById('page-count').textContent = '0';
+    document.getElementById('pageBookmarkIndicator').style.display = 'none';
+    
+    // Clear previous PDF if exists
+    if (currentPdfDoc) {
+        currentPdfDoc.destroy();
+        currentPdfDoc = null;
+    }
+    
+    // Show loading state
+    const canvas = document.getElementById('pdf-canvas');
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#f8f9fa';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#000';
+    ctx.textAlign = 'center';
+    ctx.fillText('Loading PDF...', canvas.width/2, canvas.height/2);
+    
+    // Show modal
+    pdfModal.show();
+    
+    // Load the PDF
+    pdfjsLib.getDocument(`/uploads/${filename}`).promise.then(function(pdf) {
+        currentPdfDoc = pdf;
+        document.getElementById('page-count').textContent = pdf.numPages;
+        
+        // Render first page
+        currentPageNum = 1;
+        renderPage(currentPageNum);
+        
+        // IMPORTANT: Load bookmarks and notes after PDF is loaded
+        loadBookmarks(currentBookId);
+        loadAllNotes(currentBookId);
+        
+    }).catch(function(error) {
+        console.error('Error loading PDF:', error);
+        alert('Error loading PDF: ' + error.message);
+    });
+}
+
+// Improved renderPage function
+function renderPage(num) {
+    currentPageRendering = true;
+    
+    currentPdfDoc.getPage(num).then(function(page) {
+        const viewport = page.getViewport({ scale: scale });
+        const canvas = document.getElementById('pdf-canvas');
+        const context = canvas.getContext('2d');
+        
+        // Set canvas dimensions
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+        
+        // Render PDF page
+        const renderContext = {
+            canvasContext: context,
+            viewport: viewport
+        };
+        
+        page.render(renderContext).promise.then(function() {
+            currentPageRendering = false;
+            document.getElementById('page-num').textContent = num;
+            
+            // Load page-specific data after rendering
+            loadPageNotes(currentBookId, currentPageNum);
+            checkPageBookmark();
+            
+            if (currentPageNumPending !== null) {
+                renderPage(currentPageNumPending);
+                currentPageNumPending = null;
+            }
+        });
+    });
+}
+
+// UPDATE:  loadPageNotes function
+function loadPageNotes(bookId, pageNum) {
+    fetch(`/api/notes/${bookId}?page=${pageNum}&type=note`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                displayCurrentPageNotes(data.notes);
+            } else {
+                displayCurrentPageNotes([]);
+            }
+        })
+        .catch(error => {
+            console.error('Error loading page notes:', error);
+            displayCurrentPageNotes([]);
+        });
+}
+
+function displayCurrentPageNotes(notes) {
+    const container = document.getElementById('currentPageNotes');
+    container.innerHTML = '';
+    
+    if (!notes || notes.length === 0) {
+        container.innerHTML = '<p class="text-muted small">No notes for this page</p>';
+        return;
+    }
+    
+    notes.forEach(note => {
+        const noteElement = document.createElement('div');
+        noteElement.className = 'note-item mb-2';
+        noteElement.innerHTML = `
+            <div class="note-content">${note.content}</div>
+            <div class="note-date small text-muted">
+                ${new Date(note.createdAt).toLocaleString()}
+            </div>
+            <div class="note-actions mt-1">
+                <button class="btn btn-sm btn-outline-danger" 
+                        onclick="deleteNote('${note._id}')">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+            </div>
+        `;
+        container.appendChild(noteElement);
+    });
+}
+
+// Navigation functions
+function previousPage() {
+    if (currentPdfDoc && currentPageNum > 1) {
+        currentPageNum--;
+        queueRenderPage(currentPageNum);
+    }
+}
+
+function nextPage() {
+    if (currentPdfDoc && currentPageNum < currentPdfDoc.numPages) {
+        currentPageNum++;
+        queueRenderPage(currentPageNum);
+    }
+}
+
+function queueRenderPage(num) {
+    if (currentPageRendering) {
+        currentPageNumPending = num;
+    } else {
+        renderPage(num);
+    }
+}
+
+// Zoom functions
+function zoomOut() {
+    if (scale > 0.5) {
+        scale -= 0.25;
+        document.getElementById('scale-select').value = scale;
+        queueRenderPage(currentPageNum);
+    }
+}
+
+function zoomIn() {
+    const maxScale = isFullscreen ? 3.0 : 1.5; // 150% limit when not fullscreen, 300% when fullscreen
+    
+    if (scale < maxScale) {
+        scale += 0.25;
+        document.getElementById('scale-select').value = scale;
+        queueRenderPage(currentPageNum);
+    }
+}
+
+function changeScale(e) {
+    const newScale = parseFloat(e.target.value);
+    const maxScale = isFullscreen ? 3.0 : 1.5;
+    
+    // Enforce the scale limit based on fullscreen mode
+    if (newScale > maxScale) {
+        scale = maxScale;
+        e.target.value = maxScale;
+    } else {
+        scale = newScale;
+    }
+    
+    queueRenderPage(currentPageNum);
+}
+
+// Tab switching
+function switchTab(tabName) {
+    document.querySelectorAll('.pdf-notes-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.notes-section, .bookmarks-section').forEach(s => s.classList.remove('active'));
+    
+    document.querySelector(`.pdf-notes-tab[data-tab="${tabName}"]`).classList.add('active');
+    document.querySelector(`.${tabName}-section`).classList.add('active');
+}
+
+// Fullscreen toggle
+function toggleFullscreen() {
+    const modal = document.getElementById('pdfModal');
+    const modalDialog = modal.querySelector('.modal-dialog');
+    const scaleSelect = document.getElementById('scale-select');
+    
+    if (!isFullscreen) {
+        // Entering fullscreen
+        modalDialog.classList.add('modal-fullscreen');
+        document.getElementById('fullscreen-btn').innerHTML = '<i class="fas fa-compress"></i> Exit Fullscreen';
+        
+        // Update scale options for fullscreen mode
+        scaleSelect.innerHTML = `
+            <option value="0.5">50%</option>
+            <option value="0.75">75%</option>
+            <option value="1">100%</option>
+            <option value="1.25">125%</option>
+            <option value="1.5">150%</option>
+            <option value="2">200%</option>
+        `;
+        scaleSelect.value = scale;
+        
+    } else {
+        // Exiting fullscreen
+        modalDialog.classList.remove('modal-fullscreen');
+        document.getElementById('fullscreen-btn').innerHTML = '<i class="fas fa-expand"></i> Fullscreen';
+        
+        // Update scale options for normal mode (max 150%)
+        scaleSelect.innerHTML = `
+            <option value="0.5">50%</option>
+            <option value="0.75">75%</option>
+            <option value="1">100%</option>
+            <option value="1.25">125%</option>
+            <option value="1.5">150%</option>
+        `;
+        
+        // If current scale exceeds 150%, reset to 150%
+        if (scale > 1.5) {
+            scale = 1.5;
+        }
+        scaleSelect.value = scale;
+    }
+    
+    isFullscreen = !isFullscreen;
+    queueRenderPage(currentPageNum);
+}
+
+// Download function
+function downloadPdf(filename) {
+    const link = document.createElement('a');
+    link.href = `/uploads/${filename}`;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+function saveNote() {
+    const noteText = document.getElementById('noteInput').value.trim();
+    
+    if (!noteText || !currentBookId) {
+        alert('Please enter a note and ensure a book is loaded');
+        return;
+    }
+    
+    const note = {
+        bookId: currentBookId,
+        page: currentPageNum,
+        content: noteText,
+        type: 'note'
+    };
+    
+    fetch('/api/notes', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(note)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById('noteInput').value = '';
+            loadPageNotes(currentBookId, currentPageNum);
+            loadAllNotes(currentBookId);
+        } else {
+            alert('Failed to save note: ' + (data.error || 'Unknown error'));
+        }
+    })
+    .catch(error => {
+        console.error('Error saving note:', error);
+        alert('Error saving note');
+    });
+}
+
+function addBookmark() {
+    if (isCurrentPageBookmarked) {
+        return;
+    }
+    
+    const bookmark = {
+        bookId: currentBookId,
+        page: currentPageNum,
+        content: `Bookmarked page ${currentPageNum}`,
+        type: 'bookmark'
+    };
+    
+    fetch('/api/notes', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bookmark)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Reload bookmarks and check current page
+            loadBookmarks(currentBookId);
+        } else {
+            alert('Failed to add bookmark: ' + (data.error || 'Unknown error'));
+        }
+    })
+    .catch(error => {
+        console.error('Error adding bookmark:', error);
+        alert('Error adding bookmark');
+    });
+}
+
+function loadAllNotes(bookId) {
+    fetch(`/api/notes/${bookId}?type=note`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                displayAllNotes(data.notes || []);
+            } else {
+                displayAllNotes([]);
+            }
+        })
+        .catch(error => {
+            console.error('Error loading all notes:', error);
+            displayAllNotes([]);
+        });
+}
+
+function loadBookmarks(bookId) {
+    fetch(`/api/notes/${bookId}?type=bookmark`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                currentBookmarks = data.notes || [];
+                checkPageBookmark();
+                displayBookmarks(data.notes || []);
+            } else {
+                currentBookmarks = [];
+                checkPageBookmark();
+                displayBookmarks([]);
+            }
+        })
+        .catch(error => {
+            console.error('Error loading bookmarks:', error);
+            currentBookmarks = [];
+            checkPageBookmark();
+            displayBookmarks([]);
+        });
+}
+
+function checkPageBookmark() {
+    isCurrentPageBookmarked = currentBookmarks.some(
+        bm => bm.page === currentPageNum && bm.bookId === currentBookId
+    );
+    
+    updateBookmarkButton();
+    
+    // Show/hide page indicator
+    const indicator = document.getElementById('pageBookmarkIndicator');
+    if (indicator) {
+        indicator.style.display = isCurrentPageBookmarked ? 'block' : 'none';
+    }
+}
+
+function updateBookmarkButton() {
+    const btn = document.getElementById('bookmark-btn');
+    const icon = document.getElementById('bookmark-icon');
+    
+    if (!btn || !icon) {
+        return;
+    }
+    
+    if (isCurrentPageBookmarked) {
+        btn.classList.add('bookmarked');
+        btn.setAttribute('data-bs-original-title', 'Remove bookmark');
+        icon.classList.remove('far');
+        icon.classList.add('fas'); // Solid icon
+    } else {
+        btn.classList.remove('bookmarked');
+        btn.setAttribute('data-bs-original-title', 'Bookmark this page');
+        icon.classList.remove('fas');
+        icon.classList.add('far'); // Regular icon
+    }
+    
+    // Refresh tooltip
+    const tooltip = bootstrap.Tooltip.getInstance(btn);
+    if (tooltip) {
+        tooltip.hide();
+        tooltip.update();
+    }
+}
+
+function displayPageNotes(notes) {
+    const container = document.getElementById('currentPageNotes');
+    
+    if (!notes || notes.length === 0) {
+        container.innerHTML = '<p class="text-muted small">No notes for this page</p>';
+        return;
+    }
+    
+    container.innerHTML = notes.map(note => `
+        <div class="note-item">
+            <div class="note-content">${note.content}</div>
+            <div class="note-date">${new Date(note.createdAt).toLocaleString()}</div>
+            <div class="note-actions">
+                <button class="btn btn-sm btn-outline-danger" onclick="deleteNote('${note._id}')">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function displayAllNotes(notes) {
+    const container = document.getElementById('notesList');
+    
+    if (!notes || notes.length === 0) {
+        container.innerHTML = '<p class="text-muted small">No notes yet</p>';
+        return;
+    }
+    
+    // Group notes by page
+    const notesByPage = {};
+    notes.forEach(note => {
+        if (!notesByPage[note.page]) {
+            notesByPage[note.page] = [];
+        }
+        notesByPage[note.page].push(note);
+    });
+    
+    container.innerHTML = Object.entries(notesByPage)
+        .sort(([a], [b]) => parseInt(a) - parseInt(b)) // Sort by page number
+        .map(([page, pageNotes]) => `
+            <div class="mb-3">
+                <div class="note-page">Page ${page}</div>
+                ${pageNotes.map(note => `
+                    <div class="note-item">
+                        <div class="note-content">${note.content}</div>
+                        <div class="note-date">${new Date(note.createdAt).toLocaleString()}</div>
+                        <div class="note-actions">
+                            <button class="btn btn-sm btn-outline-primary me-1" onclick="goToPage(${note.page})">
+                                <i class="fas fa-arrow-right"></i> Go
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="deleteNote('${note._id}')">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `).join('');
+}
+
+function displayBookmarks(bookmarks) {
+    const container = document.getElementById('bookmarksList');
+    
+    if (!bookmarks || bookmarks.length === 0) {
+        container.innerHTML = '<p class="text-muted small">No bookmarks yet</p>';
+        return;
+    }
+    
+    container.innerHTML = bookmarks
+        .sort((a, b) => a.page - b.page) // Sort by page number
+        .map(bookmark => `
+            <div class="bookmark-item">
+                <div class="bookmark-page">Page ${bookmark.page}</div>
+                <div class="bookmark-date">${new Date(bookmark.createdAt).toLocaleString()}</div>
+                <div class="bookmark-actions">
+                    <button class="btn btn-sm btn-outline-primary me-1" onclick="goToPage(${bookmark.page})">
+                        <i class="fas fa-arrow-right"></i> Go
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger" onclick="deleteNote('${bookmark._id}')">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </div>
+            </div>
+        `).join('');
+}
+    
+function deleteNote(noteId) {
+    if (!confirm('Are you sure you want to delete this?')) return;
+    
+    fetch(`/api/notes/${noteId}`, {
+        method: 'DELETE'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Refresh current page notes
+            loadPageNotes(currentBookId, currentPageNum);
+            // Update all notes list
+            loadAllNotes(currentBookId);
+            // Update bookmarks list
+            loadBookmarks(currentBookId);
+        } else {
+            alert('Failed to delete: ' + (data.error || 'Unknown error'));
+        }
+    })
+    .catch(error => {
+        console.error('Error deleting note:', error);
+        alert('Error deleting note');
+    });
+}
+
+function removeBookmark() {
+    const bookmark = currentBookmarks.find(
+        bm => bm.page === currentPageNum && bm.bookId === currentBookId
+    );
+    
+    if (!bookmark) {
+        return;
+    }
+    
+    fetch(`/api/notes/${bookmark._id}`, {
+        method: 'DELETE'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            currentBookmarks = currentBookmarks.filter(
+                bm => bm._id !== bookmark._id
+            );
+            checkPageBookmark();
+            loadBookmarks(currentBookId);
+        } else {
+            alert('Failed to remove bookmark: ' + (data.error || 'Unknown error'));
+        }
+    })
+    .catch(error => {
+        console.error('Error removing bookmark:', error);
+        alert('Error removing bookmark');
+    });
+}
+
+// Filter books based on search and dropdown selections
+function filterBooks() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const selectedTeacher = document.getElementById('teacherFilter').value.toLowerCase();
+    const selectedSubject = document.getElementById('subjectFilter').value.toLowerCase();
+    const selectedType = document.getElementById('typeFilter').value.toLowerCase();
+    const bookItems = document.querySelectorAll('.book-item');
+    
+    let visibleCount = 0;
+    
+    bookItems.forEach(item => {
+        const name = item.dataset.name;
+        const teacher = item.dataset.teacher.toLowerCase();
+        const subject = item.dataset.subject.toLowerCase();
+        const type = item.dataset.type.toLowerCase();
+        const institute = item.dataset.institute.toLowerCase();
+        
+        const matchesSearch = name.includes(searchTerm) || 
+                           teacher.includes(searchTerm) || 
+                           subject.includes(searchTerm) || 
+                           type.includes(searchTerm) || 
+                           institute.includes(searchTerm);
+        const matchesTeacher = !selectedTeacher || teacher.includes(selectedTeacher);
+        const matchesSubject = !selectedSubject || subject.includes(selectedSubject);
+        const matchesType = !selectedType || type.includes(selectedType);
+        
+        if (matchesSearch && matchesTeacher && matchesSubject && matchesType) {
+            item.style.display = '';
+            visibleCount++;
+        } else {
+            item.style.display = 'none';
+        }
+    });
+    
+    updateBookCount(visibleCount);
+}
+
+// Update the visible book count
+function updateBookCount(count) {
+    document.getElementById('bookCount').textContent = count;
+}
+
+// Update the total books count from institute
+function updateTotalBooks() {
+    const totalBooks = document.querySelectorAll('.book-item').length;
+    const totalBooksElement = document.getElementById('totalBooks');
+    if (totalBooksElement) {
+        totalBooksElement.textContent = totalBooks;
+    }
+}
+
+// Initialize event listeners for filters
+function initializeFilters() {
+    document.getElementById('searchInput').addEventListener('input', filterBooks);
+    document.getElementById('teacherFilter').addEventListener('change', filterBooks);
+    document.getElementById('subjectFilter').addEventListener('change', filterBooks);
+    document.getElementById('typeFilter').addEventListener('change', filterBooks);
+}
+
+// Call this when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+    initializeFilters();
+    filterBooks(); // Apply initial filtering
+    updateTotalBooks(); // Set initial total count
+});
+
+function goToPage(pageNum) {
+    if (pageNum >= 1 && pageNum <= currentPdfDoc.numPages) {
+        currentPageNum = pageNum;
+        queueRenderPage(currentPageNum);
+    }
+}
+</script>
+
+</body>
+</html>

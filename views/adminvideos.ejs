@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Video Management - Admin Dashboard</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* ===== Admin Dashboard Styles ===== */
+        :root {
+            --admin-primary: #dc3545;
+            --admin-primary-dark: #c82333;
+            --admin-secondary: #1cc88a;
+            --admin-light: #f8f9fc;
+            --admin-dark: #5a5c69;
+            --admin-gray: #858796;
+            --admin-light-gray: #eaecf4;
+            --admin-border: #e3e6f0;
+        }
+        
+        body {
+            background-color: #f8f9fc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+        }
+        
+        /* Navigation */
+        .admin-nav {
+            background: linear-gradient(135deg, var(--admin-primary) 0%, var(--admin-primary-dark) 100%);
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.2);
+        }
+        
+        .admin-nav .navbar-brand {
+            font-weight: 700;
+            font-size: 1.25rem;
+            letter-spacing: 0.5px;
+        }
+         video[loading="lazy"] {
+        display: none;
+    }
+    .video-thumb {
+        background-color: #f8f9fa;
+        position: relative;
+    }
+    .play-icon {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        background: rgba(0,0,0,0.5);
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+        
+        .admin-nav .nav-link {
+            padding: 0.75rem 1rem;
+            border-radius: 0.35rem;
+            margin: 0 0.25rem;
+            transition: all 0.3s;
+        }
+        
+        .admin-nav .nav-link:not(.active):hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-pills .nav-link.active {
+            background-color: var(--admin-primary);
+            font-weight: 600;
+        }
+        
+        /* Cards */
+        .card {
+            border: none;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-header {
+            background-color: #fff;
+            border-bottom: 1px solid var(--admin-border);
+            padding: 1rem 1.25rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Filter Card */
+        .filter-card {
+            background: #fff;
+            border: 1px solid var(--admin-border);
+        }
+        
+        /* Tables */
+        .table {
+            margin-bottom: 0;
+        }
+        
+        .table th {
+            border-top: none;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            color: var(--admin-dark);
+            background-color: var(--admin-light-gray);
+        }
+        
+        .table td {
+            vertical-align: middle;
+            border-top: 1px solid var(--admin-border);
+        }
+        
+        .table-hover tbody tr:hover {
+            background-color: rgba(220, 53, 69, 0.05);
+        }
+        
+        /* Video Thumbnail */
+        .video-thumb {
+    width: 120px;
+    height: 70px;
+    background: linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    position: relative;
+    overflow: hidden;
+}
+
+.video-thumb video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+}
+
+.video-thumb .play-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    background: rgba(0,0,0,0.6);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    font-size: 12px;
+    transition: all 0.3s ease;
+}
+
+.video-thumb:hover .play-icon {
+    background: rgba(0,0,0,0.8);
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+.video-container {
+    cursor: pointer;
+}
+        
+        /* Status Badges */
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            display: inline-block;
+        }
+        
+        .normal {
+            background-color: rgba(28, 200, 138, 0.1);
+            color: var(--admin-secondary);
+        }
+        
+        .flagged {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: var(--admin-primary);
+        }
+        
+        /* Pagination */
+        .pagination {
+            margin-top: 1rem;
+        }
+        
+        .page-item.active .page-link {
+            background-color: var(--admin-primary);
+            border-color: var(--admin-primary);
+        }
+        
+        .page-link {
+            color: var(--admin-primary);
+        }
+        
+        .page-link:hover {
+            color: var(--admin-primary-dark);
+        }
+        
+        /* Page Header */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--admin-border);
+        }
+        
+        .page-header h1 {
+            font-weight: 700;
+            color: var(--admin-dark);
+            font-size: 1.8rem;
+            margin: 0;
+        }
+        
+        .page-header .btn {
+            border-radius: 0.3rem;
+            padding: 0.5rem 1rem;
+        }
+        
+        /* Video Modal */
+        .video-modal .modal-content {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .video-modal .modal-header {
+            background: var(--admin-primary);
+            color: white;
+        }
+        
+        .video-player {
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            position: relative;
+        }
+        
+        .video-player video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .table-responsive {
+                border: none;
+            }
+            
+            .filter-card .col-md-4 {
+                margin-bottom: 1rem;
+            }
+            
+            .filter-card .d-flex {
+                justify-content: flex-start !important;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .page-header .btn {
+                margin-top: 1rem;
+            }
+            
+            .video-thumb {
+                width: 80px;
+                height: 50px;
+            }
+        }
+    </style>
+    <% if (!Object.keys(currentFilter).length && !req.originalUrl.includes('?')) { %>
+    <script>
+      if (!window.location.search.includes('institute=')) {
+        window.location.replace("/admin/videos?institute=all&teacher=all&page=1");
+      }
+    </script>
+  <% } %>
+</head>
+
+<body>
+    <!-- Admin Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark admin-nav shadow">
+        <div class="container">
+            <a class="navbar-brand" href="/admin/dashboard">
+                <i class="fas fa-user-shield me-2"></i>Admin Dashboard
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="adminNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/dashboard">
+                            <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/users">
+                            <i class="fas fa-users me-1"></i>Users
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/staff">
+                            <i class="fas fa-chalkboard-teacher me-1"></i>Staff
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/admin/videos">
+                            <i class="fas fa-video me-1"></i>Videos
+                        </a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="/admin/books"><i class="fas fa-book me-1"></i>Books</a></li>
+                    <!-- <li class="nav-item">
+                        <a class="nav-link" href="/admin/contacts">
+                            <i class="fas fa-envelope me-1"></i>Contacts
+                        </a>
+                    </li> -->
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-1"></i>Avishkar@12
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="/admin/logout"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Video Management Content -->
+    <div class="container-fluid py-4">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>
+                <i class="fas fa-video me-2"></i>Video Management
+            </h1>
+            <a href="/admin/videos/add" class="btn btn-primary">
+                <i class="fas fa-plus me-1"></i>Upload Video
+            </a>
+        </div>
+
+
+        <!-- Filters -->
+        <div class="card filter-card mb-4">
+            <div class="card-body">
+                <form method="GET" action="/admin/videos" class="row g-3">
+                    <div class="col-md-4">
+                        <label for="institute" class="form-label">Institute</label>
+                        <select class="form-select" id="institute" name="institute">
+                            <option value="all" <%= currentFilter.institute === 'all' ? 'selected' : '' %>>All Institutes</option>
+                            <% institutes.forEach(institute => { %>
+                                <option value="<%= institute %>" <%= currentFilter.institute === institute ? 'selected' : '' %>>
+                                    <%= institute || 'No Institute' %>
+                                </option>
+                            <% }); %>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <label for="teacher" class="form-label">Teacher</label>
+                        <select class="form-select" id="teacher" name="teacher">
+                            <option value="all" <%= currentFilter.teacher === 'all' ? 'selected' : '' %>>All Teachers</option>
+                            <% teachers.forEach(teacher => { %>
+                                <option value="<%= teacher._id %>" <%= currentFilter.teacher === teacher._id.toString() ? 'selected' : '' %>>
+                                    <%= teacher.sname %> (<%= teacher.institute || 'No Institute' %>)
+                                </option>
+                            <% }); %>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary me-2">
+                            <i class="fas fa-filter me-1"></i>Filter
+                        </button>
+                        <a href="/admin/videos" class="btn btn-outline-secondary">
+                            <i class="fas fa-times me-1"></i>Clear
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Videos Table -->
+        <div class="card shadow">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold">
+                    Video Library 
+                    <span class="badge bg-primary ms-2"><%= pagination.total %> videos</span>
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover" id="videosTable">
+                        <thead>
+                            <tr>
+                                <th>Video</th>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>Teacher</th>
+                                <th>Institute</th>
+                                <th>Uploaded</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (videos.length > 0) { %>
+                                <% videos.forEach(video => { %>
+                                    <tr id="video-<%= video._id %>">
+                                        <td>
+    <div class="video-thumb video-container" style="position: relative; overflow: hidden;">
+        <% if (video.filename) { %>
+            <video data-src="/uploads/<%= video.filename %>#t=0.5" 
+                   preload="none"
+                   muted 
+                   playsinline 
+                   style="width: 100%; height: 100%; object-fit: cover; display: block;"
+                   onloadeddata="this.currentTime=0.5">
+                Your browser does not support HTML5 video.
+            </video>
+            <div class="play-icon">
+                <i class="fas fa-play"></i>
+            </div>
+        <% } else { %>
+            <div class="play-icon">
+                <i class="fas fa-play"></i>
+            </div>
+        <% } %>
+    </div>
+</td>
+                                        <td>
+                                            <div class="fw-bold"><%= video.title || video.videoName %></div>
+                                            <div class="small text-muted">ID: <%= video._id.toString().slice(-6) %></div>
+                                        </td>
+                                        <td>
+                                            <div class="small text-truncate" style="max-width: 200px;" 
+                                                 title="<%= video.description %>">
+                                                <%= video.description || 'No description' %>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="fw-bold"><%= video.teacherId.sname %></div>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-light text-dark">
+                                                <%= video.teacherId.institute || 'No Institute' %>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <small class="text-muted">
+                                                <%= new Date(video.uploadDate).toLocaleDateString() %>
+                                            </small>
+                                        </td>
+                                        <td>
+                                            <span class="status-badge <%= video.isFlagged ? 'flagged' : 'normal' %>">
+                                                <i class="fas <%= video.isFlagged ? 'fa-flag' : 'fa-check-circle' %> me-1"></i>
+                                                <%= video.isFlagged ? 'Flagged' : 'Normal' %>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex">
+                                                <button class="btn btn-sm btn-outline-primary me-2" 
+                                                        onclick="watchVideo('<%= video.filename %>', '<%= video.title || video.videoName %>')">
+                                                    <i class="fas fa-play"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-warning me-2" 
+                                                        onclick="flagVideo('<%= video._id %>', '<%= !video.isFlagged %>')">
+                                                    <i class="fas fa-flag"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-danger" 
+                                                        onclick="deleteVideo('<%= video._id %>', '<%= video.title || video.videoName %>')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            <% } else { %>
+                                <tr>
+                                    <td colspan="8" class="text-center py-5">
+                                        <i class="fas fa-video fa-3x text-muted mb-3"></i>
+                                        <h5 class="text-muted">No videos found</h5>
+                                        <p class="text-muted small">Try adjusting your filters</p>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <% if (pagination.pages > 1) { %>
+                    <nav aria-label="Videos pagination">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item <%= pagination.page === 1 ? 'disabled' : '' %>">
+                                <a class="page-link" href="?page=<%= pagination.page - 1 %>&institute=<%= currentFilter.institute %>&teacher=<%= currentFilter.teacher %>">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            </li>
+                            
+                            <% for (let i = Math.max(1, pagination.page - 2); i <= Math.min(pagination.pages, pagination.page + 2); i++) { %>
+                                <li class="page-item <%= pagination.page === i ? 'active' : '' %>">
+                                    <a class="page-link" href="?page=<%= i %>&institute=<%= currentFilter.institute %>&teacher=<%= currentFilter.teacher %>">
+                                        <%= i %>
+                                    </a>
+                                </li>
+                            <% } %>
+                            
+                            <li class="page-item <%= pagination.page === pagination.pages ? 'disabled' : '' %>">
+                                <a class="page-link" href="?page=<%= pagination.page + 1 %>&institute=<%= currentFilter.institute %>&teacher=<%= currentFilter.teacher %>">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+<!-- Video Player Modal -->
+<div class="modal fade" id="videoModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="videoModalTitle"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-0">
+                <div class="ratio ratio-16x9">
+                    <video id="videoPlayer" controls>
+                        <source id="videoSource" src="" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title text-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Confirm Deletion
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to permanently delete the video <strong id="deleteVideoTitle" class="text-danger"></strong>?</p>
+                    <div class="alert alert-warning small">
+                        <i class="fas fa-warning me-2"></i>
+                        This action cannot be undone. The video will be permanently removed.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDelete">
+                        <i class="fas fa-trash me-1"></i> Delete Video
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', loadVideosLazily);
+        // Video player modal
+        function watchVideo(filename, title) {
+    const videoModal = new bootstrap.Modal(document.getElementById('videoModal'));
+    const videoPlayer = document.getElementById('videoPlayer');
+    const videoSource = document.getElementById('videoSource');
+    const modalTitle = document.getElementById('videoModalTitle');
+    
+    // Set video source
+    videoSource.src = `/uploads/${encodeURIComponent(filename)}`;
+    modalTitle.textContent = title;
+    
+    // Load the new source
+    videoPlayer.load();
+    
+    // Show modal
+    videoModal.show();
+    
+    // Optional: Auto-play when modal opens (may be blocked by browsers)
+    videoModal._element.addEventListener('shown.bs.modal', () => {
+        videoPlayer.play().catch(e => console.log('Auto-play prevented:', e));
+    });
+}
+        
+// Add click functionality to thumbnails
+document.addEventListener('DOMContentLoaded', function() {
+    loadVideosLazily();
+    
+    // Add click handlers to video thumbnails
+    document.querySelectorAll('.video-container').forEach(container => {
+        container.addEventListener('click', function() {
+            const video = this.querySelector('video');
+            if (video && video.src) {
+                const row = this.closest('tr');
+                const titleElement = row.querySelector('.fw-bold');
+                const filename = video.src.split('/').pop().split('#')[0];
+                const title = titleElement ? titleElement.textContent : 'Video';
+                
+                watchVideo(decodeURIComponent(filename), title);
+            }
+        });
+    });
+});
+// Video flagging
+        function flagVideo(videoId, flagStatus) {
+            fetch(`/admin/videos/${videoId}/flag`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ isFlagged: flagStatus })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Reload the row to update status
+                    const row = document.getElementById(`video-${videoId}`);
+                    if (row) {
+                        const statusBadge = row.querySelector('.status-badge');
+                        if (statusBadge) {
+                            statusBadge.className = flagStatus ? 
+                                'status-badge flagged' : 'status-badge normal';
+                                
+                            statusBadge.innerHTML = flagStatus ? 
+                                '<i class="fas fa-flag me-1"></i> Flagged' : 
+                                '<i class="fas fa-check-circle me-1"></i> Normal';
+                        }
+                    }
+                    showAlert(`Video ${flagStatus ? 'flagged' : 'unflagged'} successfully!`, 'success');
+                } else {
+                    showAlert(data.message || 'Error updating video status', 'danger');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('Error updating video status', 'danger');
+            });
+        }
+        
+        // Video deletion
+        let videoToDelete = null;
+        
+        function deleteVideo(videoId, videoTitle) {
+            videoToDelete = videoId;
+            document.getElementById('deleteVideoTitle').textContent = videoTitle;
+            new bootstrap.Modal(document.getElementById('deleteModal')).show();
+        }
+        
+        document.getElementById('confirmDelete').addEventListener('click', function() {
+            if (videoToDelete) {
+                fetch(`/admin/videos/${videoToDelete}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Remove the row from table
+                        document.getElementById(`video-${videoToDelete}`).remove();
+                        
+                        // Show success message
+                        showAlert('Video deleted successfully!', 'success');
+                        
+                        // Close modal
+                        bootstrap.Modal.getInstance(document.getElementById('deleteModal')).hide();
+                    } else {
+                        showAlert(data.message || 'Error deleting video', 'danger');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showAlert('Error deleting video', 'danger');
+                });
+            }
+        });
+     function loadVideosLazily() {
+    const videoContainers = document.querySelectorAll('.video-container');
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const video = entry.target.querySelector('video[data-src]');
+                if (video && !video.src) {
+                    video.src = video.dataset.src;
+                    video.load();
+                    
+                    // Set current time to 0.5 seconds for thumbnail
+                    video.addEventListener('loadeddata', function() {
+                        this.currentTime = 0.5;
+                    });
+                }
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { rootMargin: '200px' });
+
+    videoContainers.forEach(container => {
+        observer.observe(container);
+    });
+}
+ // Show alert function
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            const container = document.querySelector('.container-fluid');
+            container.insertBefore(alertDiv, container.firstChild);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/loading-attribute-polyfill@2.0.0/dist/loading-attribute-polyfill.umd.min.js"></script>
+</body>
+</html>
