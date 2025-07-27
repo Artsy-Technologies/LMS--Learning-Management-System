@@ -36,7 +36,82 @@
             background-repeat: no-repeat !important;
             background-size: cover !important;
         }
-</style>
+        
+        .institute-section {
+            margin-bottom: 3rem;
+            border: 1px solid #e9ecef;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        }
+        
+        .institute-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            margin: 0;
+        }
+        
+        .institute-header h2 {
+            margin: 0;
+            font-size: 1.75rem;
+            font-weight: 600;
+        }
+        
+        .institute-header .course-count {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-top: 0.25rem;
+        }
+        
+        .institute-courses {
+            padding: 2rem;
+            background: #fff;
+        }
+        
+        .course-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.15);
+        }
+        
+        .no-institute-section {
+            background: #f8f9fa;
+        }
+        
+        .no-institute-section .institute-header {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        }
+        .logo-img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+@media (max-width: 768px) {
+    .logo-img {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .navbar-brand h2 {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .logo-img {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .navbar-brand h2 {
+        font-size: 1.3rem;
+    }
+}
+    </style>
 </head>
 
 <body>
@@ -48,12 +123,12 @@
     </div>
     <!-- Spinner End -->
 
-
     <!-- Navbar Start -->
     <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
-        <a href="/" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
-            <h2 class="m-0 text-primary"><i class="fa fa-book me-3"></i>Grad.LMS</h2>
-        </a>
+       <a href="/" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
+        <img src="/img/lms logo.png" alt="Grad.LMS Logo" class="logo-img me-1">
+        <h2 class="m-0 text-primary">Grad.LMS</h2>
+    </a>
         <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -69,49 +144,31 @@
     </nav>
     <!-- Navbar End -->
 
-
     <!-- Header Start -->
     <div class="container-fluid bg-primary py-5 mb-5 page-header">
         <div class="container py-5">
             <div class="row justify-content-center">
                 <div class="col-lg-10 text-center">
-                    <h1 class="display-3 text-white animated slideInDown">Courses</h1>
+                    <h1 class="display-3 text-white animated slideInDown">Courses by Institute</h1>
                 </div>
             </div>
         </div>
     </div>
     <!-- Header End -->
 
-
     <!-- Filter Section -->
     <div class="container py-5">
         <div class="wow fadeInUp bg-light rounded p-4 mb-5" data-wow-delay="0.1s">
             <div class="row align-items-center">
-                <div class="col-md-6 mb-3 mb-md-0">
+                <div class="col-md-8 mb-3 mb-md-0">
                     <div class="position-relative">
-                        <input type="text" class="form-control" id="searchInput" placeholder="Search courses...">
+                        <input type="text" class="form-control" id="searchInput" placeholder="Search courses or institutes...">
                         <i class="fa fa-search position-absolute end-0 top-50 translate-middle-y me-3"></i>
                     </div>
                 </div>
-                <div class="col-md-4 mb-3 mb-md-0">
-                    <select class="form-select" id="instituteFilter">
-                        <option value="">All Institutes</option>
-                        <% 
-                            const instituteNames = new Set(); 
-                            if (typeof videos !== 'undefined') {
-                                videos.forEach(video => {
-                                    if (video.teacherId && video.teacherId.institute) {
-                                        instituteNames.add(video.teacherId.institute);
-                                    }
-                                });
-                                instituteNames.forEach(name => { 
-                        %>
-                            <option value="<%= name %>"><%= name %></option>
-                        <% }); } %>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <span class="badge bg-primary rounded-pill">
+                <div class="col-md-4">
+                    <span class="badge bg-primary rounded-pill fs-6">
+                        <i class="fa fa-university me-1"></i> <span id="instituteCount">0</span> Institutes | 
                         <i class="fa fa-video me-1"></i> <span id="courseCount">0</span> Courses
                     </span>
                 </div>
@@ -119,63 +176,97 @@
         </div>
     </div>
 
-
     <!-- Courses Start -->
     <div class="container-xxl category">
         <div class="container">
             <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
                 <h6 class="section-title bg-white text-center text-primary px-3">Courses</h6>
-                <h1 class="mb-5">Available Courses</h1>
+                <h1 class="mb-5">Available Courses by Institute</h1>
             </div>
-            <div class="row g-4" id="coursesContainer">
+            
+            <div id="institutesContainer">
                 <% if (typeof videos !== 'undefined' && videos.length > 0) { %>
-                    <% videos.forEach(function(video, index) { %>
-                        <div class="col-lg-4 col-md-6 course-item"
-                              data-name="<%= (video.title || video.videoName || '').toLowerCase() %>"
-                             data-institute="<%= video.teacherId && video.teacherId.institute ? video.teacherId.institute : '' %>">
-                            <div class="card h-100 shadow-sm border-0 wow fadeInUp" data-wow-delay="0.<%= index + 1 %>s">
-                                <% if (video.filename) { %>
-                                    <div class="ratio ratio-16x9 rounded-top overflow-hidden">
-                                        <video src="/uploads/<%= video.filename %>#t=0.5"
-                                                preload="metadata"
-                                                muted
-                                                playsinline
-                                                style="width: 100%; height: 100%; object-fit: cover;">
-                                            Your browser does not support HTML5 video.
-                                        </video>
-                                    </div>
-                                <% } else { %>
-                                    <div class="ratio ratio-16x9 rounded-top overflow-hidden bg-secondary d-flex align-items-center justify-content-center">
-                                        <i class="fa fa-video text-white" style="font-size: 3rem;"></i>
-                                    </div>
-                                <% } %>
-                                <div class="card-body text-center">
-                                    <h5 class="card-title mb-2"><%= video.title || video.videoName || 'Untitled Video' %></h5>
-                                    <% if (video.teacherId && video.teacherId.institute) { %>
-                                        <p class="text-muted small institute-name mb-2">
-                                            <i class="fa fa-university me-1"></i>
-                                            <strong><%= video.teacherId.institute %></strong>
-                                        </p>
-                                    <% } %>
-                                    <% if (video.teacherId && video.teacherId.sname) { %>
-                                        <p class="text-muted small teacher-name mb-1">
-                                            <i class="fa fa-user me-1"></i>
-                                            <%= video.teacherId.sname %>
-                                        </p>
-                                    <% } %>
-                                    <% if (video.description || video.videoDescription) { %>
-                                        <p class="text-muted small"><%= video.description || video.videoDescription %></p>
-                                    <% } %>
+                    <% 
+                        // Group videos by institute
+                        const videosByInstitute = {};
+                        videos.forEach(video => {
+                            const institute = video.teacherId && video.teacherId.institute ? video.teacherId.institute : 'Other';
+                            if (!videosByInstitute[institute]) {
+                                videosByInstitute[institute] = [];
+                            }
+                            videosByInstitute[institute].push(video);
+                        });
+                        
+                        // Sort institutes alphabetically, but put 'Other' at the end
+                        const sortedInstitutes = Object.keys(videosByInstitute).sort((a, b) => {
+                            if (a === 'Other') return 1;
+                            if (b === 'Other') return -1;
+                            return a.localeCompare(b);
+                        });
+                    %>
+                    
+                    <% sortedInstitutes.forEach((institute, instituteIndex) => { %>
+                        <div class="institute-section wow fadeInUp <%= institute === 'Other' ? 'no-institute-section' : '' %>" 
+                             data-wow-delay="0.<%= instituteIndex + 1 %>s"
+                             data-institute="<%= institute.toLowerCase() %>">
+                            
+                            <div class="institute-header">
+                                <h2>
+                                    <i class="fa fa-university me-3"></i>
+                                    <%= institute %>
+                                </h2>
+                                <div class="course-count">
+                                    <i class="fa fa-video me-1"></i>
+                                    <%= videosByInstitute[institute].length %> Course<%= videosByInstitute[institute].length !== 1 ? 's' : '' %>
+                                </div>
+                            </div>
+                            
+                            <div class="institute-courses">
+                                <div class="row g-4">
+                                    <% videosByInstitute[institute].forEach((video, videoIndex) => { %>
+                                        <div class="col-lg-4 col-md-6 course-item"
+                                             data-name="<%= (video.title || video.videoName || '').toLowerCase() %>"
+                                             data-institute="<%= institute.toLowerCase() %>">
+                                            <div class="card h-100 shadow-sm border-0 course-card wow fadeInUp" 
+                                                 data-wow-delay="0.<%= (instituteIndex * 3) + videoIndex + 1 %>s">
+                                                <% if (video.filename) { %>
+                                                    <div class="ratio ratio-16x9 rounded-top overflow-hidden">
+                                                        <video src="/uploads/<%= video.filename %>#t=0.5"
+                                                                preload="metadata"
+                                                                muted
+                                                                playsinline
+                                                                style="width: 100%; height: 100%; object-fit: cover;">
+                                                            Your browser does not support HTML5 video.
+                                                        </video>
+                                                    </div>
+                                                <% } else { %>
+                                                    <div class="ratio ratio-16x9 rounded-top overflow-hidden bg-secondary d-flex align-items-center justify-content-center">
+                                                        <i class="fa fa-video text-white" style="font-size: 3rem;"></i>
+                                                    </div>
+                                                <% } %>
+                                                <div class="card-body text-center">
+                                                    <h5 class="card-title mb-3"><%= video.title || video.videoName || 'Untitled Video' %></h5>
+                                                    <% if (video.teacherId && video.teacherId.sname) { %>
+                                                        <p class="text-muted mb-0">
+                                                            <i class="fa fa-user me-2"></i>
+                                                            <strong><%= video.teacherId.sname %></strong>
+                                                        </p>
+                                                    <% } %>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <% }); %>
                                 </div>
                             </div>
                         </div>
                     <% }); %>
+                    
                 <% } else { %>
-                    <div class="col-12 text-center">
+                    <div class="text-center">
                         <div class="empty-state">
-                            <i class="fa fa-video-slash" style="font-size: 3rem; color: #6c757d; margin-bottom: 1rem;"></i>
-                            <h4>No courses available at the moment.</h4>
-                            <p>Check back later for new content.</p>
+                            <i class="fa fa-video-slash" style="font-size: 4rem; color: #6c757d; margin-bottom: 1.5rem;"></i>
+                            <h3>No courses available at the moment.</h3>
+                            <p class="text-muted">Check back later for new content from various institutes.</p>
                         </div>
                     </div>
                 <% } %>
@@ -183,7 +274,6 @@
         </div>
     </div>
     <!-- Courses End -->
-
 
     <!-- Footer Start -->
     <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
@@ -193,8 +283,6 @@
                     <h4 class="text-white mb-3">Quick Links</h4>
                     <a class="btn btn-link" href="/about">About Us</a>
                     <a class="btn btn-link" href="/contact">Contact Us</a>
-                    <!-- <a class="btn btn-link" href="/contact">Privacy Policy</a>
-                    <a class="btn btn-link" href="/about">Terms & Conditions</a> -->
                     <a class="btn btn-link" href="/about">FAQs & Help</a>
                 </div>
                 <div class="col-lg-4 col-md-6">
@@ -202,18 +290,17 @@
                     <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>Gokulam, Mysuru</p>
                     <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+91 6363787944</p>
                     <p class="mb-2"><i class="fa fa-envelope me-3"></i>info@artsytech.in</p>
-          <div class="d-flex pt-2">
-    <a class="btn btn-outline-light btn-social" href="https://www.facebook.com/share/173b8phjfN/"><i class="fab fa-facebook-f"></i></a>
-    <a class="btn btn-outline-light btn-social" href="https://github.com/Artsy-Technologies"><i class="fab fa-github"></i></a>
-    <a class="btn btn-outline-light btn-social" href="https://www.linkedin.com/company/artsy-technologies-pvt-ltd/"><i class="fab fa-linkedin-in"></i></a>
-    <a class="btn btn-outline-light btn-social" href="https://share.google/yfvxXNi93rOYsLpny"><i class="fab fa-instagram"></i></a>
-</div>
+                    <div class="d-flex pt-2">
+                        <a class="btn btn-outline-light btn-social" href="https://www.facebook.com/share/173b8phjfN/"><i class="fab fa-facebook-f"></i></a>
+                        <a class="btn btn-outline-light btn-social" href="https://github.com/Artsy-Technologies"><i class="fab fa-github"></i></a>
+                        <a class="btn btn-outline-light btn-social" href="https://www.linkedin.com/company/artsy-technologies-pvt-ltd/"><i class="fab fa-linkedin-in"></i></a>
+                        <a class="btn btn-outline-light btn-social" href="https://share.google/yfvxXNi93rOYsLpny"><i class="fab fa-instagram"></i></a>
+                    </div>
                 </div>
                 <div class="col-lg-4 col-md-6">
                     <h4 class="text-white mb-3">Our Features</h4>
                     <p class="mb-2"><i class="fa fa-check me-3"></i>100% Secure Platform</p>
-                    <p class="mb-2"><i class="fa fa-check me-3"></i>Extensive Book Library</p>
-                    <p class="mb-2"><i class="fa fa-check me-3"></i>Quality Educational Videos</p>
+
                     <p class="mb-2"><i class="fa fa-check me-3"></i>Teacher-Student Connections</p>
                     <p class="mb-2"><i class="fa fa-check me-3"></i>24/7 Learning Access</p>
                 </div>
@@ -243,10 +330,8 @@
     </div>
     <!-- Footer End -->
 
-
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
-
 
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
@@ -261,60 +346,68 @@
     
     <script>
 document.addEventListener('DOMContentLoaded', function() {
-    updateCourseCount();
+    updateCounts();
     
     // Setup event listeners
-    document.getElementById('searchInput').addEventListener('input', filterCourses);
-    
-    // Check if instituteFilter exists before adding listener
-    const instituteFilter = document.getElementById('instituteFilter');
-    if (instituteFilter) {
-        instituteFilter.addEventListener('change', filterCourses);
-    }
+    document.getElementById('searchInput').addEventListener('input', filterContent);
 });
 
-function filterCourses() {
+function filterContent() {
     const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
-    const instituteFilter = document.getElementById('instituteFilter');
-    const selectedInstitute = instituteFilter ? instituteFilter.value : '';
-    const courses = document.querySelectorAll('.course-item');
-
-    courses.forEach(course => {
-        const name = course.dataset.name || '';
-        const institute = course.dataset.institute || '';
+    const instituteSections = document.querySelectorAll('.institute-section');
+    
+    instituteSections.forEach(section => {
+        const instituteName = section.dataset.institute || '';
+        const courses = section.querySelectorAll('.course-item');
+        let hasVisibleCourses = false;
         
-        const matchesSearch = name.includes(searchTerm);
-        const matchesInstitute = !selectedInstitute || institute.includes(selectedInstitute);
+        courses.forEach(course => {
+            const courseName = course.dataset.name || '';
+            const matchesSearch = courseName.includes(searchTerm) || instituteName.includes(searchTerm);
+            
+            course.style.display = matchesSearch ? '' : 'none';
+            if (matchesSearch) {
+                hasVisibleCourses = true;
+            }
+        });
         
-        course.style.display = matchesSearch && matchesInstitute ? '' : 'none';
+        // Show/hide entire institute section based on whether it has visible courses
+        section.style.display = hasVisibleCourses ? '' : 'none';
     });
-
-    updateCourseCount();
+    
+    updateCounts();
 }
 
-function updateCourseCount() {
+function updateCounts() {
+    const visibleInstitutes = document.querySelectorAll('.institute-section:not([style*="display: none"])').length;
     const visibleCourses = document.querySelectorAll('.course-item:not([style*="display: none"])').length;
+    
+    const instituteCountElement = document.getElementById('instituteCount');
     const courseCountElement = document.getElementById('courseCount');
+    
+    if (instituteCountElement) {
+        instituteCountElement.textContent = visibleInstitutes;
+    }
     if (courseCountElement) {
         courseCountElement.textContent = visibleCourses;
     }
     
     // Show/hide empty state
-    const coursesContainer = document.getElementById('coursesContainer');
-    let emptyState = coursesContainer.querySelector('.empty-state');
+    const institutesContainer = document.getElementById('institutesContainer');
+    let emptyState = institutesContainer.querySelector('.empty-state');
     
-    if (visibleCourses === 0 && coursesContainer.querySelector('.course-item')) {
+    if (visibleInstitutes === 0 && institutesContainer.querySelector('.institute-section')) {
         if (!emptyState) {
             const emptyDiv = document.createElement('div');
-            emptyDiv.className = 'col-12 text-center empty-state';
+            emptyDiv.className = 'text-center empty-state';
             emptyDiv.innerHTML = `
-                <div class="empty-state">
-                    <i class="fa fa-search" style="font-size: 3rem; color: #6c757d; margin-bottom: 1rem;"></i>
-                    <h4>No Courses Found</h4>
-                    <p>Try adjusting your search criteria.</p>
+                <div>
+                    <i class="fa fa-search" style="font-size: 4rem; color: #6c757d; margin-bottom: 1.5rem;"></i>
+                    <h3>No Results Found</h3>
+                    <p class="text-muted">Try adjusting your search criteria to find courses and institutes.</p>
                 </div>
             `;
-            coursesContainer.appendChild(emptyDiv);
+            institutesContainer.appendChild(emptyDiv);
         } else {
             emptyState.style.display = 'block';
         }

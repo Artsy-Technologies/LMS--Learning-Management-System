@@ -298,11 +298,12 @@ app.use('/uploads', express.static('uploads', { headers: { 'Content-Type': 'vide
 // Handle video upload (POST request)
 app.post('/upload', upload.single('video'), (req, res) => {
     try {
-        
         // Check if file is uploaded
         if (!req.file) {
-            req.flash('error', 'No file uploaded');
-            return res.redirect('/staffupload');
+            return res.json({ 
+                success: false, 
+                message: 'No file uploaded' 
+            });
         }
 
         const { videoName, videoDescription } = req.body;
@@ -310,41 +311,51 @@ app.post('/upload', upload.single('video'), (req, res) => {
 
         // Check for empty fields
         if (!filename || !videoName || !videoDescription) {
-            req.flash('error', 'Required all fields');
-            return res.redirect('/staffupload');
+            return res.json({ 
+                success: false, 
+                message: 'All fields are required' 
+            });
         }
 
         // Get the logged-in staff member's ID from the session
         const teacherId = req.session.Staff;
         if (!teacherId) {
-            req.flash('error', 'You must be logged in as staff to upload videos');
-            return res.redirect('/stafflogin');
+            return res.json({ 
+                success: false, 
+                message: 'You must be logged in as staff to upload videos' 
+            });
         }
 
         const newVideo = new Video({
             title: videoName,
-            videoName: videoName,
             description: videoDescription,
-            videoDescription: videoDescription,
             filename,
             teacherId
         });
+
         newVideo.save()
             .then(video => {
-                res.json(video);
+                res.json({ 
+                    success: true, 
+                    message: 'Video uploaded successfully!',
+                    data: video 
+                });
             })
             .catch(error => {
                 console.error('Error saving video to database:', error);
-                console.log(error);
-                res.render("error");
+                res.json({ 
+                    success: false, 
+                    message: 'Database error occurred while saving video' 
+                });
             });
     } catch (error) {
-        console.log('Error processing upload:', error);
         console.error('Error processing upload:', error);
-        res.render("error");
+        res.json({ 
+            success: false, 
+            message: 'Server error occurred during upload' 
+        });
     }
 });
-
 app.post('/upload-book', upload.single('book'), (req, res) => {
     try {
         console.log('Processing book upload:', req.body, req.file);

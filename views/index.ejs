@@ -9,7 +9,11 @@
     <meta content="" name="description">
 
     <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
+  
+<link rel="icon" type="image/x-icon" href="img/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.png">
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -37,7 +41,32 @@
             height: 600px; /* Fixed height for consistency */
             margin-top: 2rem; /* Add space between navbar and carousel for all screen sizes */
         }
-        
+        .logo-img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+@media (max-width: 768px) {
+    .logo-img {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .navbar-brand h2 {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .logo-img {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .navbar-brand h2 {
+        font-size: 1.3rem;
+    }
+}
         .owl-carousel-item {
             height: 600px !important;
             position: relative;
@@ -254,23 +283,24 @@
 
 
     <!-- Navbar Start -->
-    <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
-        <a href="/" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
-            <h2 class="m-0 text-primary"><i class="fa fa-book me-3"></i>Grad.LMS</h2>
-        </a>
-        <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarCollapse">
-            <div class="navbar-nav ms-auto p-4 p-lg-0">
-                <a href="/" class="nav-item nav-link active">Home</a>
-                <a href="/about" class="nav-item nav-link">About</a>
-                <a href="/courses" class="nav-item nav-link">Courses</a>
-                <a href="/contact" class="nav-item nav-link">Contact</a>
-            </div>
-            <a href="/select" class="btn btn-primary py-4 px-lg-5 d-lg-block">Join Now<i class="fa fa-arrow-right ms-3"></i></a>
+   <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
+    <a href="/" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
+        <img src="/img/lms logo.png" alt="Grad.LMS Logo" class="logo-img me-1">
+        <h2 class="m-0 text-primary">Grad.LMS</h2>
+    </a>
+    <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav ms-auto p-4 p-lg-0">
+            <a href="/" class="nav-item nav-link active">Home</a>
+            <a href="/about" class="nav-item nav-link">About</a>
+            <a href="/courses" class="nav-item nav-link">Courses</a>
+            <a href="/contact" class="nav-item nav-link">Contact</a>
         </div>
-    </nav>
+        <a href="/select" class="btn btn-primary py-4 px-lg-5 d-lg-block">Join Now<i class="fa fa-arrow-right ms-3"></i></a>
+    </div>
+</nav>
     <!-- Navbar End -->
 
 
