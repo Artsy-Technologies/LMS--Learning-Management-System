@@ -30,11 +30,12 @@
     <!-- Template Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
     
-    <!-- Custom CSS for Carousel Height Fix -->
+    <!-- Custom CSS for Carousel Height Fix and Mobile Responsiveness -->
     <style>
         /* Ensure consistent carousel height */
         .header-carousel {
             height: 600px; /* Fixed height for consistency */
+            margin-top: 2rem; /* Add space between navbar and carousel for all screen sizes */
         }
         
         .owl-carousel-item {
@@ -48,6 +49,28 @@
             height: 100%;
             object-fit: cover; /* Maintains aspect ratio while filling container */
             object-position: center;
+        }
+
+        /* Mobile navbar fixes */
+        @media (max-width: 991.98px) {
+            /* Show join now button in collapsed navbar */
+            .navbar-collapse .btn-primary {
+                display: inline-block !important;
+                margin-top: 1rem;
+                width: 100%;
+                text-align: center;
+            }
+            
+            /* Ensure navbar toggler works properly */
+            .navbar-toggler {
+                border: none;
+                padding: 4px 8px;
+            }
+            
+            /* Fix navbar brand on mobile */
+            .navbar-brand h2 {
+                font-size: 1.5rem;
+            }
         }
         
         /* Responsive heights */
@@ -63,12 +86,158 @@
             .owl-carousel-item {
                 height: 400px !important;
             }
+            
+            /* Add margin to prevent overlap with next section */
+            .container-fluid.p-0.mb-5 {
+                margin-bottom: 6rem !important;
+            }
+            
+            /* Add space between navbar and carousel */
+            .header-carousel {
+                margin-top: 2rem !important;
+            }
+            
+            /* Add space for service section */
+            .container-xxl.py-5:first-of-type {
+                padding-top: 6rem !important;
+                padding-bottom: 6rem !important;
+            }
+            
+            /* Mobile carousel content adjustments */
+            .owl-carousel-item .container {
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+            
+            /* Adjust text sizes for mobile */
+            .owl-carousel-item .display-3 {
+                font-size: 2rem !important;
+                line-height: 1.2;
+            }
+            
+            .owl-carousel-item .fs-5 {
+                font-size: 1rem !important;
+                margin-bottom: 1.5rem !important;
+            }
+            
+            /* Keep action buttons visible but styled for mobile */
+            .owl-carousel-item .btn {
+                padding: 0.75rem 1.5rem !important;
+                font-size: 0.9rem;
+                margin-bottom: 0.75rem;
+                display: inline-block;
+                width: auto;
+                min-width: 140px;
+                margin-right: 0.5rem !important;
+            }
+            
+            .owl-carousel-item .btn:last-of-type {
+                margin-right: 0 !important;
+            }
+            
+            /* Button container for proper centering */
+            .owl-carousel-item .row .col-sm-10 {
+                text-align: center;
+            }
+            
+            /* Ensure buttons don't overlap with content */
+            .owl-carousel-item .col-sm-10 {
+                padding-bottom: 2rem;
+            }
         }
         
         @media (max-width: 576px) {
             .header-carousel,
             .owl-carousel-item {
                 height: 350px !important;
+            }
+            
+            /* Increase margin even more for very small screens */
+            .container-fluid.p-0.mb-5 {
+                margin-bottom: 7rem !important;
+            }
+            
+            /* Add more space between navbar and carousel on small screens */
+            .header-carousel {
+                margin-top: 3rem !important;
+            }
+            
+            /* Add more space for service section on small screens */
+            .container-xxl.py-5:first-of-type {
+                padding-top: 7rem !important;
+                padding-bottom: 7rem !important;
+            }
+            
+            /* Even smaller text for very small screens */
+            .owl-carousel-item .display-3 {
+                font-size: 1.5rem !important;
+            }
+            
+            .owl-carousel-item h5 {
+                font-size: 0.9rem !important;
+            }
+            
+            .owl-carousel-item .fs-5 {
+                font-size: 0.85rem !important;
+            }
+            
+            /* Stack buttons vertically on very small screens but keep them visible */
+            .owl-carousel-item .btn {
+                display: block !important;
+                width: 100% !important;
+                margin-right: 0 !important;
+                margin-bottom: 0.75rem !important;
+                max-width: 250px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            
+            /* Adjust navbar brand for very small screens */
+            .navbar-brand h2 {
+                font-size: 1.25rem;
+            }
+        }
+
+        /* Owl Carousel Navigation Arrows - Hide on Mobile */
+        @media (max-width: 768px) {
+            .owl-nav {
+                display: none !important;
+            }
+            
+            .owl-nav button {
+                display: none !important;
+            }
+        }
+
+        /* Ensure proper z-index layering */
+        .owl-carousel-item .position-absolute {
+            z-index: 2;
+        }
+        
+        .owl-nav {
+            z-index: 10;
+        }
+
+        /* Additional mobile optimizations */
+        @media (max-width: 768px) {
+            /* Prevent horizontal scroll */
+            body {
+                overflow-x: hidden;
+            }
+            
+            /* Service items mobile spacing */
+            .service-item {
+                margin-bottom: 2rem;
+            }
+            
+            /* About section mobile adjustments */
+            .about-section .col-lg-6 {
+                margin-bottom: 2rem;
+            }
+            
+            /* Footer mobile adjustments */
+            .footer .col-lg-4 {
+                margin-bottom: 2rem;
             }
         }
     </style>
@@ -98,10 +267,8 @@
                 <a href="/about" class="nav-item nav-link">About</a>
                 <a href="/courses" class="nav-item nav-link">Courses</a>
                 <a href="/contact" class="nav-item nav-link">Contact</a>
-
-
             </div>
-            <a href="/select" class="btn btn-primary py-4 px-lg-5 d-none d-lg-block">Join Now<i class="fa fa-arrow-right ms-3"></i></a>
+            <a href="/select" class="btn btn-primary py-4 px-lg-5 d-lg-block">Join Now<i class="fa fa-arrow-right ms-3"></i></a>
         </div>
     </nav>
     <!-- Navbar End -->
@@ -224,27 +391,25 @@
                     <h4 class="text-white mb-3">Quick Links</h4>
                     <a class="btn btn-link" href="/about">About Us</a>
                     <a class="btn btn-link" href="/contact">Contact Us</a>
-                    <a class="btn btn-link" href="/contact">Privacy Policy</a>
-                    <a class="btn btn-link" href="/about">Terms & Conditions</a>
+                    <!-- <a class="btn btn-link" href="/contact">Privacy Policy</a>
+                    <a class="btn btn-link" href="/about">Terms & Conditions</a> -->
                     <a class="btn btn-link" href="/about">FAQs & Help</a>
                 </div>
                 <div class="col-lg-4 col-md-6">
                     <h4 class="text-white mb-3">Contact Info</h4>
                     <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>Gokulam, Mysuru</p>
-                    <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+91 123-456-7890</p>
-                    <p class="mb-2"><i class="fa fa-envelope me-3"></i>contact@gradlms.com</p>
+                    <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+91 6363787944</p>
+                    <p class="mb-2"><i class="fa fa-envelope me-3"></i>info@artsytech.in</p>
                     <div class="d-flex pt-2">
-                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-twitter"></i></a>
-                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-facebook-f"></i></a>
-                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-youtube"></i></a>
-                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-linkedin-in"></i></a>
-                    </div>
+    <a class="btn btn-outline-light btn-social" href="https://www.facebook.com/share/173b8phjfN/"><i class="fab fa-facebook-f"></i></a>
+    
+    <a class="btn btn-outline-light btn-social" href="https://www.linkedin.com/company/artsy-technologies-pvt-ltd/"><i class="fab fa-linkedin-in"></i></a>
+    <a class="btn btn-outline-light btn-social" href="https://share.google/yfvxXNi93rOYsLpny"><i class="fab fa-instagram"></i></a>
+</div>
                 </div>
                 <div class="col-lg-4 col-md-6">
                     <h4 class="text-white mb-3">Our Features</h4>
                     <p class="mb-2"><i class="fa fa-check me-3"></i>100% Secure Platform</p>
-                    <p class="mb-2"><i class="fa fa-check me-3"></i>Extensive Book Library</p>
-                    <p class="mb-2"><i class="fa fa-check me-3"></i>Quality Educational Videos</p>
                     <p class="mb-2"><i class="fa fa-check me-3"></i>Teacher-Student Connections</p>
                     <p class="mb-2"><i class="fa fa-check me-3"></i>24/7 Learning Access</p>
                 </div>
@@ -258,7 +423,7 @@
             <div class="copyright">
                 <div class="row">
                     <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                        &copy; <a class="border-bottom" href="#">Grad.LMS</a>, All Rights Reserved. Designed By <a class="border-bottom" href="">ABC & Team</a>
+                        &copy; <a class="border-bottom" href="#">Grad.LMS</a>, All Rights Reserved. Designed By <a class="border-bottom" href="">Artsy Technologies Pvt Ltd & Team</a>
                     </div>
                     <div class="col-md-6 text-center text-md-end">
                         <div class="footer-menu">

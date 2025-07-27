@@ -212,7 +212,7 @@ async deleteBook(req, res) {
                 sname,
                 semail,
                 spassword: hashedPassword,
-                institute,
+                institute, // Added institute field
                 isVerified: false,
             });
 
@@ -223,23 +223,144 @@ async deleteBook(req, res) {
             staff.resetToken = verificationToken;
             staff.resetTokenExpiry = Date.now() + 3600000; // Token expires in 1 hour
             await staff.save();
+ const htmlContent = `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Staff Verification Request</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    line-height: 1.6;
+                    margin: 0;
+                    padding: 20px;
+                    background-color: #f4f4f4;
+                }
+                .container {
+                    max-width: 600px;
+                    margin: 0 auto;
+                    background: white;
+                    padding: 20px;
+                    border-radius: 10px;
+                    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                }
+                .header {
+                    background: #007bff;
+                    color: white;
+                    padding: 20px;
+                    text-align: center;
+                    border-radius: 10px 10px 0 0;
+                    margin: -20px -20px 20px -20px;
+                }
+                .user-details {
+                    background: #f8f9fa;
+                    padding: 15px;
+                    border-radius: 5px;
+                    margin: 20px 0;
+                }
+                .detail-row {
+                    display: flex;
+                    justify-content: space-between;
+                    margin: 10px 0;
+                    padding: 8px 0;
+                    border-bottom: 1px solid #dee2e6;
+                }
+                .detail-label {
+                    font-weight: bold;
+                    color: #495057;
+                }
+                .detail-value {
+                    color: #6c757d;
+                }
+                .btn-container {
+                    text-align: center;
+                    margin: 30px 0;
+                }
+                .verify-btn {
+                    background: #28a745;
+                    color: white;
+                    padding: 12px 30px;
+                    text-decoration: none;
+                    border-radius: 5px;
+                    font-weight: bold;
+                    display: inline-block;
+                }
+                .verify-btn:hover {
+                    background: #218838;
+                }
+                .footer {
+                    text-align: center;
+                    margin-top: 30px;
+                    padding-top: 20px;
+                    border-top: 1px solid #dee2e6;
+                    color: #6c757d;
+                    font-size: 14px;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <h2>🎓 New Staff Registration Request</h2>
+                    <p>LMS Project - Staff Verification</p>
+                </div>
+                
+                <h3>A new staff has registered and requires verification:</h3>
+                
+                <div class="user-details">
+                    <div class="detail-row">
+                        <span class="detail-label">👤 Name: </span>
+                        <span class="detail-value">${sname}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">📧 Email: </span>
+                        <span class="detail-value">${semail}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">🏫 Institute: </span>
+                        <span class="detail-value">${institute}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">📅 Registration Date: </span>
+                        <span class="detail-value">${new Date().toLocaleString()}</span>
+                    </div>
+                </div>
 
+                <p><strong>Please review the staff details above and click the button below to authorize this registration:</strong></p>
+
+                <div class="btn-container">
+                    <a href="http://localhost:5000/verify/${verificationToken}" class="verify-btn">
+                        ✅ AUTHORIZE STAFF
+                    </a>
+                </div>
+                
+                <div class="footer">
+                    <p>This verification link will expire in 1 hour.</p>
+                    <p>If you did not expect this registration request, please ignore this email.</p>
+                    <p>© 2025 LMS Project. All rights reserved.</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        `;
             const mailOptions = {
             from: process.env.ADMIN_EMAIL,
             to: process.env.INSTRUCTOR_EMAIL,
-            subject: '🎓 New User Registration - Verification Required',
+            subject: '🎓 New Staff Registration - Verification Required',
             html: htmlContent,
             // Fallback text version
             text: `
-                New User Registration Request
+                New Staff Registration Request
                 
                 User Details:
                 Name: ${sname}
                 Email: ${semail}
                 Institute: ${institute}
                 Registration Date: ${new Date().toLocaleString()}
-                
-                Please verify this user by clicking the following link:
+
+                Please verify this staff by clicking the following link:
                 http://localhost:5000/staffverify/${verificationToken}
                 
                 This link will expire in 1 hour.
@@ -439,10 +560,10 @@ async authorizeStaff(req, res) {
                             🚀 LOGIN NOW
                         </a>
                     </div>
-                    
-                    <p>Welcome to the LMS Project!</p>
-                    
-                    <p>Best regards,<br>The LMS Team</p>
+
+                    <p>Welcome to Grad.LMS!</p>
+
+                    <p>Best regards,<br>The Grad.LMS Team</p>
                 </div>
             </body>
             </html>

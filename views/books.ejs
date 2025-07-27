@@ -300,6 +300,139 @@
     right: 0;
     z-index: 2;
 }
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+    /* Stack buttons vertically on mobile */
+    .book-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .book-actions .btn {
+        width: 100%;
+        margin: 0;
+    }
+    .mobile-notes-section-content {
+        display: none;
+    }
+    
+    .mobile-notes-section-content.active {
+        display: block;
+    }
+    /* Mobile PDF viewer adjustments */
+    .pdf-viewer-container {
+        width: 100%;
+        height: calc(100vh - 300px);
+    }
+    
+    .pdf-notes-sidebar {
+        display: none; /* Hide sidebar on mobile */
+    }
+    
+    /* Simplify PDF controls for mobile */
+    .pdf-controls-container {
+        padding: 8px;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .pdf-navigation {
+        order: 1;
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .pdf-page-info {
+        order: 2;
+        font-size: 0.9rem;
+    }
+    
+    .pdf-zoom {
+        display: none; /* Hide zoom controls on mobile */
+    }
+    
+    /* Mobile modal adjustments */
+    .modal-dialog {
+        margin: 0;
+        max-width: 100%;
+        height: 100vh;
+    }
+    
+    .modal-content {
+        height: 100vh;
+        border-radius: 0;
+    }
+    
+    .modal-header {
+        padding: 10px 15px;
+    }
+    
+    .modal-title {
+        font-size: 1rem;
+    }
+    
+    /* Canvas container mobile optimization */
+    .pdf-canvas-container {
+        padding: 10px;
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    #pdf-canvas {
+        max-width: 100%;
+        height: auto;
+        touch-action: pan-x pan-y pinch-zoom;
+    }
+    /* Mobile notes section below PDF */
+    .mobile-notes-section {
+        display: block;
+        background: #f8f9fa;
+        border-top: 1px solid #dee2e6;
+        padding: 15px;
+        max-height: 300px;
+        overflow-y: auto;
+    }
+    
+    .mobile-notes-tabs {
+        display: flex;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #dee2e6;
+    }
+    
+    .mobile-notes-tab {
+        flex: 1;
+        text-align: center;
+        padding: 8px;
+        cursor: pointer;
+        background: #e9ecef;
+        border: none;
+        font-size: 0.9rem;
+    }
+    
+    .mobile-notes-tab.active {
+        background: #06BBCC;
+        color: white;
+        font-weight: bold;
+    }
+    
+    .mobile-notes-content {
+        max-height: 200px;
+        overflow-y: auto;
+    }
+    
+    /* Hide desktop sidebar on mobile */
+    .pdf-notes-sidebar {
+        display: none;
+    }
+}
+
+/* Show desktop sidebar, hide mobile notes on desktop */
+@media (min-width: 769px) {
+    .mobile-notes-section {
+        display: none;
+    }
+
+}
     </style>
     <!-- Favicon -->
     <link href="img/favicon.ico" rel="icon">
@@ -593,48 +726,51 @@
                     </div>
                     <div class="modal-body p-0">
     <!-- Controls Row - MOVED TO TOP -->
-    <div class="pdf-controls-container">
-        <div class="pdf-navigation">
-            <button class="btn btn-sm btn-outline-primary" id="prev-page">
-                <i class="fas fa-arrow-left"></i> Previous
-            </button>
-            <button class="btn btn-sm btn-outline-primary" id="next-page">
-                Next <i class="fas fa-arrow-right"></i>
-            </button>
-            <div class="pdf-actions">
+   <div class="pdf-controls-container">
+    <div class="pdf-navigation">
+        <button class="btn btn-sm btn-outline-primary" id="prev-page">
+            <i class="fas fa-arrow-left"></i> <span class="d-none d-md-inline">Previous</span>
+        </button>
+        <button class="btn btn-sm btn-outline-primary" id="next-page">
+            <span class="d-none d-md-inline">Next</span> <i class="fas fa-arrow-right"></i>
+        </button>
+        <button id="bookmark-btn" class="btn btn-sm btn-outline-secondary d-md-none" 
+                data-bs-toggle="tooltip" data-bs-placement="bottom" 
+                title="Bookmark this page">
+            <i id="bookmark-icon" class="far fa-bookmark"></i>
+        </button>
+    </div>
+    
+    <div class="pdf-page-info">
+        <span id="page-num">1</span>
+        <span>/</span>
+        <span id="page-count">0</span>
+    </div>
+    
+    <div class="pdf-zoom d-none d-md-flex">
+        <button class="btn btn-sm btn-outline-secondary" id="zoom-out">
+            <i class="fas fa-search-minus"></i>
+        </button>
+        <button class="btn btn-sm btn-outline-secondary" id="zoom-in">
+            <i class="fas fa-search-plus"></i>
+        </button>
+        <select class="form-select form-select-sm" id="scale-select" style="width: 100px;">
+            <option value="0.5">50%</option>
+            <option value="0.75">75%</option>
+            <option value="1" selected>100%</option>
+            <option value="1.25">125%</option>
+            <option value="1.5">150%</option>
+        </select>
+        <button class="btn btn-sm btn-primary fullscreen-btn" id="fullscreen-btn">
+            <i class="fas fa-expand"></i> Fullscreen
+        </button>
         <button id="bookmark-btn" class="btn btn-sm btn-outline-secondary" 
                 data-bs-toggle="tooltip" data-bs-placement="bottom" 
                 title="Bookmark this page">
             <i id="bookmark-icon" class="far fa-bookmark"></i>
         </button>
     </div>
-        </div>
-        
-        <div class="pdf-page-info">
-            <span id="page-num">1</span>
-            <span>of</span>
-            <span id="page-count">0</span>
-        </div>
-        
-        <div class="pdf-zoom">
-            <button class="btn btn-sm btn-outline-secondary" id="zoom-out">
-                <i class="fas fa-search-minus"></i>
-            </button>
-            <button class="btn btn-sm btn-outline-secondary" id="zoom-in">
-                <i class="fas fa-search-plus"></i>
-            </button>
-            <select class="form-select form-select-sm" id="scale-select" style="width: 100px;">
-                <option value="0.5">50%</option>
-                <option value="0.75">75%</option>
-                <option value="1" selected>100%</option>
-                <option value="1.25">125%</option>
-                <option value="1.5">150%</option>
-            </select>
-            <button class="btn btn-sm btn-primary fullscreen-btn" id="fullscreen-btn">
-                <i class="fas fa-expand"></i> Fullscreen
-            </button>
-        </div>
-    </div>
+</div>
 
     <div class="pdf-content-wrapper">
         <!-- PDF Viewer Area -->
@@ -682,6 +818,37 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- Add this after the pdf-content-wrapper div and before modal-body closing tag -->
+<div class="mobile-notes-section d-md-none">
+    <div class="mobile-notes-tabs">
+        <button class="mobile-notes-tab active" data-mobile-tab="notes">
+            <i class="fas fa-sticky-note me-1"></i> Notes
+        </button>
+        <button class="mobile-notes-tab" data-mobile-tab="bookmarks">
+            <i class="fas fa-bookmark me-1"></i> Bookmarks
+        </button>
+    </div>
+    
+    <div class="mobile-notes-content">
+        <!-- Notes Tab Content -->
+        <div class="mobile-notes-section-content active" id="mobile-notes">
+            <div class="mb-3">
+                <textarea id="mobileNoteInput" class="form-control" rows="2" placeholder="Add note for this page..."></textarea>
+                <button class="btn btn-primary btn-sm mt-2" onclick="saveMobileNote()">
+                    <i class="fas fa-save me-1"></i> Save
+                </button>
+            </div>
+            <h6 class="mb-2">Page Notes:</h6>
+            <div id="mobileCurrentPageNotes"></div>
+        </div>
+        
+        <!-- Bookmarks Tab Content -->
+        <div class="mobile-notes-section-content" id="mobile-bookmarks">
+            <h6 class="mb-2">All Bookmarks:</h6>
+            <div id="mobileBookmarksList"></div>
+        </div>
+    </div>
+</div>
                     </div>
                 </div>
             </div>
@@ -691,26 +858,26 @@
     <!-- Footer Start -->
     <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
         <div class="container py-5">
-            <div class="row g-5 justify-content-center">
-                <div class="col-lg-3 col-md-6">
-                    <h4 class="text-white mb-3">Quick Link</h4>
-                    <a class="btn btn-link" href="">About Us</a>
-                    <a class="btn btn-link" href="">Contact Us</a>
-                    <a class="btn btn-link" href="">Privacy Policy</a>
-                    <a class="btn btn-link" href="">Terms & Condition</a>
-                    <a class="btn btn-link" href="">FAQs & Help</a>
+            <div class="row g-5">
+                <div class="col-lg-4 col-md-6">
+                    <h4 class="text-white mb-3">Quick Links</h4>
+                    <a class="btn btn-link" href="/about">About Us</a>
+                    <a class="btn btn-link" href="/contact">Contact Us</a>
+                    <!-- <a class="btn btn-link" href="/contact">Privacy Policy</a>
+                    <a class="btn btn-link" href="/about">Terms & Conditions</a> -->
+                    <a class="btn btn-link" href="/about">FAQs & Help</a>
                 </div>
-                <div class="col-lg-3 col-md-6">
-                    <h4 class="text-white mb-3">Contact</h4>
-                    <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>123 abc,abc</p>
-                    <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+91 123-456-1028</p>
-                    <p class="mb-2"><i class="fa fa-envelope me-3"></i>abc@abc.com</p>
-                    <div class="d-flex pt-2">
-                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-twitter"></i></a>
-                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-facebook-f"></i></a>
-                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-youtube"></i></a>
-                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-linkedin-in"></i></a>
-                    </div>
+                <div class="col-lg-4 col-md-6">
+                    <h4 class="text-white mb-3">Contact Info</h4>
+                    <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>Gokulam, Mysuru</p>
+                    <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+91 6363787944</p>
+                    <p class="mb-2"><i class="fa fa-envelope me-3"></i>info@artsytech.in</p>
+          <div class="d-flex pt-2">
+    <a class="btn btn-outline-light btn-social" href="https://www.facebook.com/share/173b8phjfN/"><i class="fab fa-facebook-f"></i></a>
+    <a class="btn btn-outline-light btn-social" href="https://github.com/Artsy-Technologies"><i class="fab fa-github"></i></a>
+    <a class="btn btn-outline-light btn-social" href="https://www.linkedin.com/company/artsy-technologies-pvt-ltd/"><i class="fab fa-linkedin-in"></i></a>
+    <a class="btn btn-outline-light btn-social" href="https://share.google/yfvxXNi93rOYsLpny"><i class="fab fa-instagram"></i></a>
+</div>
                 </div>
                 <div class="col-lg-4 col-md-6">
                     <h4 class="text-white mb-3">Our Features</h4>
@@ -719,21 +886,25 @@
                     <p class="mb-2"><i class="fa fa-check me-3"></i>Quality Educational Videos</p>
                     <p class="mb-2"><i class="fa fa-check me-3"></i>Teacher-Student Connections</p>
                     <p class="mb-2"><i class="fa fa-check me-3"></i>24/7 Learning Access</p>
-                </div> 
+                </div>
             </div>
         </div>
+        
+        <!-- Added space between footer content and copyright -->
+        <div style="height: 40px;"></div>
+        
         <div class="container">
             <div class="copyright">
                 <div class="row">
                     <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                        &copy; <a class="border-bottom" href="#">Grad.LMS</a>, All Right Reserved Designed By <a class="border-bottom">ABC & TEAM</a>
+                        &copy; <a class="border-bottom" href="#">Grad.LMS</a>, All Rights Reserved. Designed By <a class="border-bottom" href="">Artsy Technologies Pvt Ltd & Team</a>
                     </div>
                     <div class="col-md-6 text-center text-md-end">
                         <div class="footer-menu">
                             <a href="">Home</a>
                             <a href="">Cookies</a>
                             <a href="">Help</a>
-                            <a href="">FQAs</a>
+                            <a href="">FAQs</a>
                         </div>
                     </div>
                 </div>
@@ -776,7 +947,14 @@ let isFullscreen = false;
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize modal
     pdfModal = new bootstrap.Modal(document.getElementById('pdfModal'));
-    
+    // Add after existing event listeners
+// Hide zoom controls on mobile
+if (window.innerWidth <= 768) {
+    document.getElementById('zoom-out').style.display = 'none';
+    document.getElementById('zoom-in').style.display = 'none';
+    document.getElementById('scale-select').style.display = 'none';
+    document.getElementById('fullscreen-btn').style.display = 'none';
+}
     // Set up event listeners
     document.getElementById('prev-page').addEventListener('click', previousPage);
     document.getElementById('next-page').addEventListener('click', nextPage);
@@ -797,6 +975,141 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// Add to your existing DOMContentLoaded event listener
+ document.querySelectorAll('.mobile-notes-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            switchMobileTab(this.dataset.mobileTab);
+        });
+ switchMobileTab('notes');
+        
+    });
+
+// Add these new functions
+function switchMobileTab(tabName) {
+    // Remove active class from all tabs
+    document.querySelectorAll('.mobile-notes-tab').forEach(t => t.classList.remove('active'));
+    // Remove active class from all content sections
+    document.querySelectorAll('.mobile-notes-section-content').forEach(s => s.classList.remove('active'));
+    
+    // Add active class to clicked tab
+    document.querySelector(`.mobile-notes-tab[data-mobile-tab="${tabName}"]`).classList.add('active');
+    // Show corresponding content
+    document.getElementById(`mobile-${tabName}`).classList.add('active');
+}
+
+function saveMobileNote() {
+    const noteText = document.getElementById('mobileNoteInput').value.trim();
+    
+    if (!noteText || !currentBookId) {
+        alert('Please enter a note and ensure a book is loaded');
+        return;
+    }
+    
+    const note = {
+        bookId: currentBookId,
+        page: currentPageNum,
+        content: noteText,
+        type: 'note'
+    };
+    
+    fetch('/api/notes', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(note)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById('mobileNoteInput').value = '';
+            loadMobilePageNotes(currentBookId, currentPageNum);
+            loadAllNotes(currentBookId); // Also update desktop version
+        } else {
+            alert('Failed to save note: ' + (data.error || 'Unknown error'));
+        }
+    })
+    .catch(error => {
+        console.error('Error saving note:', error);
+        alert('Error saving note');
+    });
+}
+
+function loadMobilePageNotes(bookId, pageNum) {
+    fetch(`/api/notes/${bookId}?page=${pageNum}&type=note`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                displayMobileCurrentPageNotes(data.notes);
+            } else {
+                displayMobileCurrentPageNotes([]);
+            }
+        })
+        .catch(error => {
+            console.error('Error loading mobile page notes:', error);
+            displayMobileCurrentPageNotes([]);
+        });
+}
+function displayMobileCurrentPageNotes(notes) {
+    const container = document.getElementById('mobileCurrentPageNotes');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    if (!notes || notes.length === 0) {
+        container.innerHTML = '<p class="text-muted small">No notes for this page</p>';
+        return;
+    }
+    
+    notes.forEach(note => {
+        const noteElement = document.createElement('div');
+        noteElement.className = 'note-item mb-2 p-2 bg-white rounded border-start border-primary border-3';
+        noteElement.innerHTML = `
+            <div class="note-content small mb-1">${note.content}</div>
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="note-date small text-muted">
+                    ${new Date(note.createdAt).toLocaleString()}
+                </div>
+                <button class="btn btn-sm btn-outline-danger" onclick="deleteNote('${note._id}')">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        `;
+        container.appendChild(noteElement);
+    });
+}
+function displayMobileBookmarks(bookmarks) {
+    const container = document.getElementById('mobileBookmarksList');
+    if (!container) return;
+    
+    if (!bookmarks || bookmarks.length === 0) {
+        container.innerHTML = '<p class="text-muted small">No bookmarks yet</p>';
+        return;
+    }
+    
+    container.innerHTML = bookmarks
+        .sort((a, b) => a.page - b.page)
+        .map(bookmark => `
+            <div class="bookmark-item mb-2 p-2 bg-white rounded border-start border-warning border-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="bookmark-page small fw-bold text-warning">Page ${bookmark.page}</div>
+                        <div class="bookmark-date small text-muted">
+                            ${new Date(bookmark.createdAt).toLocaleString()}
+                        </div>
+                    </div>
+                    <div>
+                        <button class="btn btn-sm btn-outline-primary me-1" onclick="goToPage(${bookmark.page})">
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteNote('${bookmark._id}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+}
 function toggleBookmark() {
     if (isCurrentPageBookmarked) {
         removeBookmark();
@@ -851,6 +1164,12 @@ function openPdfViewer(bookId, filename, title) {
         console.error('Error loading PDF:', error);
         alert('Error loading PDF: ' + error.message);
     });
+
+// Enable touch gestures on mobile
+if (window.innerWidth <= 768) {
+    const canvas = document.getElementById('pdf-canvas');
+    canvas.style.touchAction = 'pan-x pan-y pinch-zoom';
+}
 }
 
 // Improved renderPage function
@@ -858,8 +1177,20 @@ function renderPage(num) {
     currentPageRendering = true;
     
     currentPdfDoc.getPage(num).then(function(page) {
-        const viewport = page.getViewport({ scale: scale });
+        // Mobile-responsive scale calculation
         const canvas = document.getElementById('pdf-canvas');
+        const container = canvas.parentElement;
+        const containerWidth = container.clientWidth - 40; // Account for padding
+        
+        let viewport = page.getViewport({ scale: 1 });
+        let mobileScale = scale;
+        
+        // On mobile, auto-fit width
+        if (window.innerWidth <= 768) {
+            mobileScale = containerWidth / viewport.width;
+        }
+        
+        viewport = page.getViewport({ scale: mobileScale });
         const context = canvas.getContext('2d');
         
         // Set canvas dimensions
@@ -888,20 +1219,23 @@ function renderPage(num) {
     });
 }
 
-// UPDATE:  loadPageNotes function
 function loadPageNotes(bookId, pageNum) {
     fetch(`/api/notes/${bookId}?page=${pageNum}&type=note`)
         .then(response => response.json())
         .then(data => {
             if (data.success) {
                 displayCurrentPageNotes(data.notes);
+                // Also update mobile version
+                displayMobileCurrentPageNotes(data.notes);
             } else {
                 displayCurrentPageNotes([]);
+                displayMobileCurrentPageNotes([]);
             }
         })
         .catch(error => {
             console.error('Error loading page notes:', error);
             displayCurrentPageNotes([]);
+            displayMobileCurrentPageNotes([]);
         });
 }
 
@@ -1152,10 +1486,13 @@ function loadBookmarks(bookId) {
                 currentBookmarks = data.notes || [];
                 checkPageBookmark();
                 displayBookmarks(data.notes || []);
+                // Also update mobile version
+                displayMobileBookmarks(data.notes || []);
             } else {
                 currentBookmarks = [];
                 checkPageBookmark();
                 displayBookmarks([]);
+                displayMobileBookmarks([]);
             }
         })
         .catch(error => {
@@ -1163,6 +1500,7 @@ function loadBookmarks(bookId) {
             currentBookmarks = [];
             checkPageBookmark();
             displayBookmarks([]);
+            displayMobileBookmarks([]);
         });
 }
 

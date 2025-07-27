@@ -56,38 +56,6 @@
         }
 
     </style>
-     <!-- <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const loginForm = document.getElementById('loginForm');
-        
-        if (loginForm) {
-            loginForm.addEventListener('submit', function(e) {
-                const email = document.getElementById('email').value.trim();
-                const password = document.getElementById('password').value.trim();
-                
-                // Clear any existing alerts
-                const existingAlert = document.querySelector('.alert.alert-danger');
-                if (existingAlert) {
-                    existingAlert.remove();
-                }
-                
-                if (!email || !password) {
-                    // Create and show error message
-                    const alertDiv = document.createElement('div');
-                    alertDiv.className = 'alert alert-danger alert-dismissible fade show';
-                    alertDiv.role = 'alert';
-                    alertDiv.innerHTML = 'All fields are required';
-                    
-                    // Insert after the title
-                    const title = document.querySelector('.card-title');
-                    title.insertAdjacentElement('afterend', alertDiv);
-                    
-                    e.preventDefault();
-                }
-            });
-        }
-    });
-</script> -->
 </head>
 
 <body>
@@ -115,94 +83,98 @@
                 <a href="/courses" class="nav-item nav-link">Courses</a>
                 <a href="/contact" class="nav-item nav-link">Contact</a>
                 <a href="/select" class="nav-item nav-link">Back to Selection</a>
-
+            </div>
+        </div>
     </nav>
     <!-- Navbar End -->
+    
     <!-- Header Start -->
     <div class="container-fluid bg-primary py-5 mb-5 page-header">
         <div class="container py-5">
             <div class="row justify-content-center">
                 <div class="col-lg-10 text-center">
                     <h1 class="display-3 text-white animated slideInDown">Login/Sign-up</h1>
-                   
                 </div>
             </div>
         </div>
     </div>
     <!-- Header End -->
 
+    <!-- Login Card Start -->
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title text-center">Login as Student</h2>
+                        
+                        <!-- Show error message if exists -->
+                        <% if (typeof error !== 'undefined' && error !== null && typeof formSubmitted !== 'undefined' && formSubmitted === true) { %>
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <%= error %>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        <% } %>
+                        
+                        <form action="/login" method="post" id="loginForm" novalidate>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" name="email" class="form-control" id="email" 
+                                       placeholder="Enter your email" 
+                                       value="<%= email || '' %>"
+                                       required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" name="password" class="form-control" id="password" 
+                                       placeholder="Enter your password"
+                                       required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Login</button>
+                        </form>
 
- <!-- Login Card Start -->
-<div class="container my-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-6">
-            <div class="card">
-                <div class="card-body">
-                    <h2 class="card-title text-center">Login as Student</h2>
-                    
-                    <!-- Show error message if exists -->
-                    <% if (typeof error !== 'undefined' && error !== null && typeof formSubmitted !== 'undefined' && formSubmitted === true) { %>
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <%= error %>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <div class="mt-3 text-center">
+                            <p class="mb-0">Don't have an account? <a href="#" data-bs-toggle="modal" data-bs-target="#studentsignup">Sign Up</a></p>
+                            <p><a href="#" data-bs-toggle="modal" data-bs-target="#studentforgotpassword">Forgot Password?</a></p>
                         </div>
-                    <% } %>
-                    
-                    <form action="/login" method="post" id="loginForm" novalidate>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" name="email" class="form-control" id="email" 
-                                   placeholder="Enter your email" 
-                                   value="<%= email || '' %>"
-                                   required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Password</label>
-                            <input type="password" name="password" class="form-control" id="password" 
-                                   placeholder="Enter your password"
-                                   required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Login</button>
-                    </form>
-
-                    <div class="mt-3 text-center">
-                        <p class="mb-0">Don't have an account? <a href="#signup" data-bs-toggle="modal">Sign Up</a></p>
-                        <p><a href="#forgotpassword" data-bs-toggle="modal">Forgot Password?</a></p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
     <!-- Login Card End -->
 
     <!-- SignUp Modal -->
-    <div class="modal fade" id="staffsignup" tabindex="-1" aria-labelledby="staffSignupLabel" aria-hidden="true">
+    <div class="modal fade" id="studentsignup" tabindex="-1" aria-labelledby="studentSignupLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="staffSignupLabel">Sign Up as Staff</h5>
+                    <h5 class="modal-title" id="studentSignupLabel">Sign Up as Student</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <!-- Your Sign Up Form goes here -->
-                    <form action="/staffsignup" method="post">
+                    <!-- Student Sign Up Form -->
+                    <form action="/signup" method="post">
                         <!-- Sign Up Form Fields -->
                         <div class="mb-3">
-                            <label for="staffSignupName" class="form-label">Username</label>
-                            <input type="text" class="form-control" id="staffSignupName" name="sname" placeholder="Enter your username" required>
+                            <label for="studentSignupName" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="studentSignupName" name="name" placeholder="Enter your full name" required>
                         </div>
                         <div class="mb-3">
-                            <label for="staffSignupEmail" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="staffSignupEmail" name="semail" placeholder="Enter your email" required>
+                            <label for="studentSignupEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="studentSignupEmail" name="email" placeholder="Enter your email" required>
                         </div>
                         <div class="mb-3">
-                            <label for="staffInstitute" class="form-label">Institute</label>
-                            <input type="text" class="form-control" id="staffInstitute" name="sinstitute" placeholder="Enter your institute name" required>
+                            <label for="studentInstitute" class="form-label">Institute/School</label>
+                            <input type="text" class="form-control" id="studentInstitute" name="institute" placeholder="Enter your institute name" required>
                         </div>
                         <div class="mb-3">
-                            <label for="staffSignupPassword" class="form-label">Password</label>
-                            <input type="password" class="form-control" name="spassword" id="staffSignupPassword" placeholder="Enter your password" required>
+                            <label for="studentSignupPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" name="password" id="studentSignupPassword" placeholder="Enter your password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="studentConfirmPassword" class="form-label">Confirm Password</label>
+                            <input type="password" class="form-control" name="confirmPassword" id="studentConfirmPassword" placeholder="Confirm your password" required>
                         </div>
 
                         <button type="submit" class="btn btn-primary">Sign Up</button>
@@ -218,20 +190,20 @@
     </div>
 
     <!-- Forgot Password Modal -->
-    <div class="modal fade" id="staffforgotpassword" tabindex="-1" aria-labelledby="staffForgotPasswordModalLabel" aria-hidden="true">
+    <div class="modal fade" id="studentforgotpassword" tabindex="-1" aria-labelledby="studentForgotPasswordModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="staffForgotPasswordModalLabel">Staff Forgot Password</h5>
+                    <h5 class="modal-title" id="studentForgotPasswordModalLabel">Student Forgot Password</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <!-- Your Forgot Password Form goes here -->
-                    <form action="/staffforgotpassword" method="post">
+                    <!-- Student Forgot Password Form -->
+                    <form action="/studentforgotpassword" method="post">
                         <!-- Forgot Password Form Fields -->
                         <div class="mb-3">
-                            <label for="staffForgotEmail" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="staffForgotEmail" name="semail" placeholder="Enter your email" required>
+                            <label for="studentForgotEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="studentForgotEmail" name="email" placeholder="Enter your email" required>
                         </div>
 
                         <button type="submit" class="btn btn-primary">Reset Password</button>
@@ -247,63 +219,58 @@
     </div>
 
     <!-- Footer Start -->
-    <!-- Footer Start -->
-<div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
-    <div class="container py-5">
-        <div class="row g-5">
-            <div class="col-lg-4 col-md-6">
-                <h4 class="text-white mb-3">Quick Links</h4>
-                <a class="btn btn-link" href="/about">About Us</a>
-                <a class="btn btn-link" href="/contact">Contact Us</a>
-                <a class="btn btn-link" href="/contact">Privacy Policy</a>
-                <a class="btn btn-link" href="/about">Terms & Conditions</a>
-                <a class="btn btn-link" href="/about">FAQs & Help</a>
-            </div>
-            <div class="col-lg-4 col-md-6">
-                <h4 class="text-white mb-3">Contact Info</h4>
-                <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>123 Education Street, Learning City</p>
-                <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+91 123-456-7890</p>
-                <p class="mb-2"><i class="fa fa-envelope me-3"></i>contact@gradlms.com</p>
-                <div class="d-flex pt-2">
-                    <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-twitter"></i></a>
-                    <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-facebook-f"></i></a>
-                    <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-youtube"></i></a>
-                    <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-linkedin-in"></i></a>
+    <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
+        <div class="container py-5">
+            <div class="row g-5">
+                <div class="col-lg-4 col-md-6">
+                    <h4 class="text-white mb-3">Quick Links</h4>
+                    <a class="btn btn-link" href="/about">About Us</a>
+                    <a class="btn btn-link" href="/contact">Contact Us</a>
+                    <a class="btn btn-link" href="/about">FAQs & Help</a>
                 </div>
-            </div>
-            <div class="col-lg-4 col-md-6">
-                <h4 class="text-white mb-3">Our Features</h4>
-                <p class="mb-2"><i class="fa fa-check me-3"></i>100% Secure Platform</p>
-                <p class="mb-2"><i class="fa fa-check me-3"></i>Extensive Book Library</p>
-                <p class="mb-2"><i class="fa fa-check me-3"></i>Quality Educational Videos</p>
-                <p class="mb-2"><i class="fa fa-check me-3"></i>Teacher-Student Connections</p>
-                <p class="mb-2"><i class="fa fa-check me-3"></i>24/7 Learning Access</p>
+                <div class="col-lg-4 col-md-6">
+                    <h4 class="text-white mb-3">Contact Info</h4>
+                    <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>Gokulam, Mysuru</p>
+                    <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+91 6363787944</p>
+                    <p class="mb-2"><i class="fa fa-envelope me-3"></i>info@artsytech.in</p>
+                    <div class="d-flex pt-2">
+                        <a class="btn btn-outline-light btn-social" href="https://www.facebook.com/share/173b8phjfN/"><i class="fab fa-facebook-f"></i></a>
+                        <a class="btn btn-outline-light btn-social" href="https://github.com/Artsy-Technologies"><i class="fab fa-github"></i></a>
+                        <a class="btn btn-outline-light btn-social" href="https://www.linkedin.com/company/artsy-technologies-pvt-ltd/"><i class="fab fa-linkedin-in"></i></a>
+                        <a class="btn btn-outline-light btn-social" href="https://share.google/yfvxXNi93rOYsLpny"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <h4 class="text-white mb-3">Our Features</h4>
+                    <p class="mb-2"><i class="fa fa-check me-3"></i>100% Secure Platform</p>
+                    <p class="mb-2"><i class="fa fa-check me-3"></i>Extensive Book Library</p>
+                    <p class="mb-2"><i class="fa fa-check me-3"></i>Quality Educational Videos</p>
+                    <p class="mb-2"><i class="fa fa-check me-3"></i>Teacher-Student Connections</p>
+                    <p class="mb-2"><i class="fa fa-check me-3"></i>24/7 Learning Access</p>
+                </div>
             </div>
         </div>
-    </div>
-    
-    <!-- Added space between footer content and copyright -->
-    <div style="height: 40px;"></div>
-    
-    <div class="container">
-        <div class="copyright">
-            <div class="row">
-                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                    &copy; <a class="border-bottom" href="#">Grad.LMS</a>, All Rights Reserved. Designed By <a class="border-bottom" href="">ABC & Team</a>
-                </div>
-                <div class="col-md-6 text-center text-md-end">
-                    <div class="footer-menu">
-                        <a href="">Home</a>
-                        <a href="">Cookies</a>
-                        <a href="">Help</a>
-                        <a href="">FAQs</a>
+        
+        <!-- Added space between footer content and copyright -->
+        <div style="height: 40px;"></div>
+        
+        <div class="container">
+            <div class="copyright">
+                <div class="row">
+                    <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                        &copy; <a class="border-bottom" href="#">Grad.LMS</a>, All Rights Reserved. Designed By <a class="border-bottom" href="">Artsy Technologies Pvt Ltd & Team</a>
+                    </div>
+                    <div class="col-md-6 text-center text-md-end">
+                        <div class="footer-menu">
+                            <a href="">Home</a>
+                            <a href="">Cookies</a>
+                            <a href="">Help</a>
+                            <a href="">FAQs</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
-<!-- Footer End -->
     </div>
     <!-- Footer End -->
 

@@ -234,9 +234,18 @@
         }
 
         .btn-read {
-            background-color: #6f42c1;
-            border-color: #6f42c1;
-        }
+    background-color: #6f42c1;
+    border-color: #6f42c1;
+    border-radius: 25px;
+    z-index: 3; /* Increase z-index */
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 8px 20px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
 
         .btn-read:hover {
             background-color: #5a2d91;
@@ -316,7 +325,81 @@
             margin-top: auto;
             font-size: 0.95rem;
         }
+.btn-read {
+    background-color: #6f42c1;
+    border-color: #6f42c1;
+    border-radius: 25px;
+    z-index: 3; /* Increase z-index */
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 8px 20px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
 
+/* Mobile fix for button collision */
+@media (max-width: 768px) {
+    .book-preview {
+        height: 180px;
+        position: relative;
+    }
+    
+    .book-thumbnail {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--book-gradient);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        color: white;
+        z-index: 1; /* Lower z-index than button */
+    }
+    
+    .btn-read {
+        z-index: 4; /* Higher z-index on mobile */
+        bottom: 15px;
+        padding: 6px 16px;
+        font-size: 0.85rem;
+    }
+    
+    .type-badge, .date-badge {
+        z-index: 3; /* Ensure badges are above background but below button */
+    }
+}
+@media (max-width: 768px) {
+    .course-item {
+        margin-bottom: 20px;
+    }
+    
+    .filter-container {
+        padding: 20px; /* Match paste-2 */
+    }
+    
+    .video-preview, .book-preview {
+        height: 180px;
+    }
+    
+    .video-thumbnail i.fa-play-circle,
+    .book-thumbnail i.fa-book {
+        font-size: 3rem;
+    }
+    
+    .toggle-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .toggle-btn {
+        margin-bottom: 5px;
+        width: 100%; /* Full width on mobile */
+    }
+}
         .filter-container {
             background: white;
             padding: 25px;
@@ -362,8 +445,18 @@
             box-shadow: 0 0 0 0.2rem rgba(6,187,204,0.25);
         }
 .navbar {
-    padding-top: 1.5rem;
-    padding-bottom: 1.4rem;
+    padding-top: 1.2rem;
+    padding-bottom: 1.2rem;
+}
+
+.navbar-brand {
+    padding-top: 1.2rem;
+    padding-bottom: 1.2rem;
+}
+
+.navbar-nav .nav-link {
+    padding-top: 1.2rem;
+    padding-bottom: 1.2rem;
 }
 
         .navbar-brand h2 {
@@ -425,6 +518,22 @@
         }
 
         /* Responsive adjustments */
+        .nav-buttons .btn {
+    margin: 0 0.5rem;
+    padding: 0.75rem 2rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+/* Add mobile responsiveness */
+@media (max-width: 768px) {
+    .nav-buttons .btn {
+        margin: 0.25rem;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+}
         @media (max-width: 768px) {
             .course-item {
                 margin-bottom: 20px;
@@ -483,7 +592,7 @@
         <div class="container py-5">
             <div class="row justify-content-center">
                 <div class="col-lg-10 text-center">
-                    <h1 class="display-3 animated text-white mb-4">View Content</h1>
+                    <h1 class="display-3 text-white mb-4" style="font-weight: 700;">View Content</h1>
                     <div class="nav-buttons d-flex justify-content-center flex-wrap mb-4">
                         <a href="/staff/update" class="btn">
                             <i class="fas fa-edit me-2"></i>Update
@@ -740,21 +849,21 @@
                     <h4 class="text-white mb-3">Quick Link</h4>
                     <a class="btn btn-link text-light" href="/about">About Us</a>
                     <a class="btn btn-link text-light" href="/contact">Contact Us</a>
-                    <a class="btn btn-link text-light" href="/contact">Privacy Policy</a>
-                    <a class="btn btn-link text-light" href="/about">Terms & Condition</a>
+                    <!-- <a class="btn btn-link text-light" href="/contact">Privacy Policy</a>
+                    <a class="btn btn-link text-light" href="/about">Terms & Condition</a> -->
                     <a class="btn btn-link text-light" href="/about">FAQs & Help</a>
                 </div>
                 <div class="col-lg-3 col-md-6">
-                    <h4 class="text-white mb-3">Contact</h4>
-                    <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>123 abc,abc</p>
-                    <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+91 123-456-1078</p>
-                    <p class="mb-2"><i class="fa fa-envelope me-3"></i>info@abc.com</p>
-                    <div class="d-flex pt-2">
-                        <a class="btn btn-outline-light btn-social me-2" href=""><i class="fab fa-twitter"></i></a>
-                        <a class="btn btn-outline-light btn-social me-2" href=""><i class="fab fa-facebook-f"></i></a>
-                        <a class="btn btn-outline-light btn-social me-2" href=""><i class="fab fa-youtube"></i></a>
-                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-linkedin-in"></i></a>
-                    </div>
+                         <h4 class="text-white mb-3">Contact Info</h4>
+                <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>Gokulam, Mysuru</p>
+                <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+91 6363787944</p>
+                <p class="mb-2"><i class="fa fa-envelope me-3"></i>info@artsytech.in</p>
+                   <div class="d-flex pt-2">
+    <a class="btn btn-outline-light btn-social" href="https://www.facebook.com/share/173b8phjfN/"><i class="fab fa-facebook-f"></i></a>
+    <a class="btn btn-outline-light btn-social" href="https://github.com/Artsy-Technologies"><i class="fab fa-github"></i></a>
+    <a class="btn btn-outline-light btn-social" href="https://www.linkedin.com/company/artsy-technologies-pvt-ltd/"><i class="fab fa-linkedin-in"></i></a>
+    <a class="btn btn-outline-light btn-social" href="https://share.google/yfvxXNi93rOYsLpny"><i class="fab fa-instagram"></i></a>
+</div>
                 </div>
                 <div class="col-lg-6 col-md-12">
                     <h4 class="text-white mb-3">About Grad.LMS</h4>

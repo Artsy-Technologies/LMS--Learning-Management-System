@@ -26,9 +26,7 @@ const User = mongoose.model('User', userSchema);
 //video db  model
 const videoSchema = new mongoose.Schema({
     title: String,
-    videoName: String, // For backward compatibility
     description: String,
-    videoDescription: String, // For backward compatibility
     filename: String,
     teacherId: { type: mongoose.Schema.Types.ObjectId, ref: 'Staff' },
     uploadDate: { type: Date, default: Date.now },

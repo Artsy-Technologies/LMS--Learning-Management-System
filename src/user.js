@@ -158,7 +158,7 @@ const userController = {
                 <p><strong>Please review the user details above and click the button below to authorize this registration:</strong></p>
                 
                 <div class="btn-container">
-                    <a href="http://localhost:3000/verify/${verificationToken}" class="verify-btn">
+                    <a href="http://localhost:5000/verify/${verificationToken}" class="verify-btn">
                         ✅ AUTHORIZE USER
                     </a>
                 </div>
@@ -166,7 +166,7 @@ const userController = {
                 <div class="footer">
                     <p>This verification link will expire in 1 hour.</p>
                     <p>If you did not expect this registration request, please ignore this email.</p>
-                    <p>© 2024 LMS Project. All rights reserved.</p>
+                    <p>© 2025 LMS Project. All rights reserved.</p>
                 </div>
             </div>
         </body>
@@ -391,9 +391,9 @@ async authorizeUser(req, res) {
                         </a>
                     </div>
                     
-                    <p>Welcome to the LMS Project!</p>
+                    <p>Welcome to the Grad.LMS!</p>
                     
-                    <p>Best regards,<br>The LMS Team</p>
+                    <p>Best regards,<br>Grad.LMS Team</p>
                 </div>
             </body>
             </html>
@@ -411,7 +411,7 @@ async authorizeUser(req, res) {
                 - Email: ${user.email}
                 - Institute: ${user.institute}
                 
-                Welcome to the LMS Project!
+                Welcome to the Grad.LMS!
             `
         };
 
