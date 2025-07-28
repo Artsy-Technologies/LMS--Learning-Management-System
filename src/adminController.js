@@ -5,8 +5,8 @@ const nodemailer = require('nodemailer');
 const mongoose = require('mongoose');
 
 // Admin credentials from environment variables
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'nadigersankalp@gmail.com';
-const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'Avishkar@12';
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'avishkar@artsytech.in';
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'ArtsyTech';
 
 // Email transporter configuration
 const transporter = nodemailer.createTransport({
@@ -131,7 +131,7 @@ const adminController = {
             const totalUsers = await User.countDocuments();
             const totalStaff = await Staff.countDocuments();
             const totalVideos = await Video.countDocuments();
-            const totalContacts = await Contact.countDocuments();
+            const totalBooks = await Book.countDocuments();
 
             // Get users by institute
             const usersByInstitute = await User.aggregate([
@@ -155,7 +155,7 @@ const adminController = {
                     totalUsers,
                     totalStaff,
                     totalVideos,
-                    totalContacts
+                    totalBooks
                 },
                 usersByInstitute,
                 staffByInstitute,

@@ -119,6 +119,7 @@
 .btn-sm-square:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+    color: white !important;
 }
 
 /* Social icons container styling */
@@ -172,6 +173,42 @@
     .navbar-brand h2 {
         font-size: 1.3rem;
     }
+}
+
+/* Partner button styling */
+.partner-btn-container {
+    margin-top: 3rem;
+    text-align: center;
+}
+
+.btn-partner {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    border: none;
+    color: white;
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 50px;
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-partner:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+.btn-partner i {
+    margin-left: 8px;
+    transition: transform 0.3s ease;
+}
+
+.btn-partner:hover i {
+    transform: translateX(5px);
 }
 </style>
     <!-- Template Stylesheet -->
@@ -332,7 +369,7 @@
                         <div class="bg-light d-flex justify-content-center pt-2 px-1">
                             <a class="btn btn-sm-square btn-primary mx-1" href="https://geethashishu.in/"><i class="fas fa-globe"></i></a>
                             <a class="btn btn-sm-square btn-primary mx-1" href="mailto:gsssengg@gmail.com"><i class="fas fa-envelope"></i></a>
-                            <a class="btn btn-sm-square btn-primary mx-1" href="tel:+918214257304"><i class="fas fa-phone"></i></a>
+                            <a class="btn btn-sm-square btn-primary mx-1" href="tel:+918214257304"><i class="fas fa-phone-alt"></i></a>
                         </div>
                     </div>
                     <div class="text-center p-4">
@@ -350,7 +387,7 @@
                         <div class="bg-light d-flex justify-content-center pt-2 px-1">
                             <a class="btn btn-sm-square btn-primary mx-1" href="https://mitmysore.in/"><i class="fas fa-globe"></i></a>
                             <a class="btn btn-sm-square btn-primary mx-1" href="mailto:principal@mitmysore.in"><i class="fas fa-envelope"></i></a>
-                            <a class="btn btn-sm-square btn-primary mx-1" href="tel:9620228021"><i class="fas fa-phone"></i></a>
+                            <a class="btn btn-sm-square btn-primary mx-1" href="tel:9620228021"><i class="fas fa-phone-alt"></i></a>
                         </div>
                     </div>
                     <div class="text-center p-4">
@@ -362,17 +399,17 @@
             <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
                 <div class="team-item bg-light">
                     <div class="overflow-hidden">
-                        <img class="img-fluid" src="img/gitm-logo.jpg" alt="GITM">
+                        <img class="img-fluid" src="img/gmit.png" alt="GMIT">
                     </div>
                     <div class="position-relative d-flex justify-content-center" style="margin-top: -23px;">
                         <div class="bg-light d-flex justify-content-center pt-2 px-1">
-                            <a class="btn btn-sm-square btn-primary mx-1" href="#"><i class="fas fa-globe"></i></a>
-                            <a class="btn btn-sm-square btn-primary mx-1" href="#"><i class="fas fa-envelope"></i></a>
-                            <a class="btn btn-sm-square btn-primary mx-1" href="#"><i class="fas fa-phone"></i></a>
+                            <!-- <a class="btn btn-sm-square btn-primary mx-1" href="https://www.gmit.ac.in/"><i class="fas fa-globe"></i></a> -->
+                            <!-- <a class="btn btn-sm-square btn-primary mx-1" href="mailto: info@gmit.ac.in"><i class="fas fa-envelope"></i></a> -->
+                            <a class="btn btn-sm-square btn-primary mx-1" href="tel:08232235566"><i class="fas fa-phone-alt"></i></a>
                         </div>
                     </div>
                     <div class="text-center p-4">
-                        <h5 class="mb-0">GITM</h5>
+                        <h5 class="mb-0">GMIT</h5>
                         <small>Management & Technology</small>
                     </div>
                 </div>
@@ -380,21 +417,29 @@
             <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.7s">
                 <div class="team-item bg-light">
                     <div class="overflow-hidden">
-                        <img class="img-fluid" src="img/partner-4.jpg" alt="Partner Institution">
+                        <img class="img-fluid" src="img/pes.png" alt="PES University Mandya">
                     </div>
                     <div class="position-relative d-flex justify-content-center" style="margin-top: -23px;">
                         <div class="bg-light d-flex justify-content-center pt-2 px-1">
-                            <a class="btn btn-sm-square btn-primary mx-1" href="#"><i class="fas fa-globe"></i></a>
-                            <a class="btn btn-sm-square btn-primary mx-1" href="#"><i class="fas fa-envelope"></i></a>
-                            <a class="btn btn-sm-square btn-primary mx-1" href="#"><i class="fas fa-phone"></i></a>
+                            <a class="btn btn-sm-square btn-primary mx-1" href="https://pesce.ac.in/"><i class="fas fa-globe"></i></a>
+                            <a class="btn btn-sm-square btn-primary mx-1" href="mailto:admissions@pesce.ac.in"><i class="fas fa-envelope"></i></a>
+                            <a class="btn btn-sm-square btn-primary mx-1" href="tel:+91 8232 220043"><i class="fas fa-phone-alt"></i></a>
                         </div>
                     </div>
                     <div class="text-center p-4">
-                        <h5 class="mb-0">More Institutions</h5>
-                        <small>Join Our Partnership</small>
+                        <h5 class="mb-0">PES University Mandya</h5>
+                        <small>Engineering & Research</small>
                     </div>
                 </div>
             </div>
+        </div>
+        
+        <!-- Partner Button -->
+        <div class="partner-btn-container wow fadeInUp" data-wow-delay="0.9s">
+            <a href="/contact" class="btn-partner">
+                Become a Partner Now
+                <i class="fas fa-arrow-right"></i>
+            </a>
         </div>
     </div>
 </div>

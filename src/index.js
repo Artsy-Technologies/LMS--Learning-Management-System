@@ -81,7 +81,7 @@ app.get("/index", (req, res) => {
 });
 
 // This route should display institute-specific courses for users
-app.get("/upload", isAuthenticatedupload, async (req, res) => {
+app.get("/videos", isAuthenticatedupload, async (req, res) => {
     try {
         // Check if user or staff is logged in
         const currentUser = req.session.User || req.session.Staff;
@@ -96,7 +96,7 @@ app.get("/upload", isAuthenticatedupload, async (req, res) => {
         // Check if user has institute field
         if (!currentUser.institute) {
             console.error('User has no institute:', currentUser.email);
-            return res.render('upload', {
+            return res.render('videos', {
                 videos: [],
           
                 user: currentUser,
@@ -123,17 +123,17 @@ app.get("/upload", isAuthenticatedupload, async (req, res) => {
         );
 
         console.log(`Found ${instituteVideos.length} videos from institute: ${currentUser.institute}`);
-        console.log('About to render upload template');
+        console.log('About to render videos template');
 
-        res.render('upload', {
+        res.render('videos', {
             videos: instituteVideos,
             user: currentUser
         });
 
     } catch (error) {
-        console.error('Error in /upload route:', error);
+        console.error('Error in /videos route:', error);
         res.status(500).render('error', {
-            message: 'Error loading upload page',
+            message: 'Error loading videos page',
             error: error
         });
     }
@@ -148,13 +148,12 @@ app.get("/books", isAuthenticatedupload, async (req, res) => {
             return res.redirect('/login');
         }
 
-        console.log('Current user accessing upload:', currentUser.email, 'Institute:', currentUser.institute);
+        console.log('Current user accessing books:', currentUser.email, 'Institute:', currentUser.institute);
 
         // Check if user has institute field
         if (!currentUser.institute) {
             console.error('User has no institute:', currentUser.email);
-            return res.render('upload', {
-               
+            return res.render('books', {
                 books: [],
                 user: currentUser,
                 error: 'No institute assigned to your account'
@@ -174,9 +173,6 @@ const books = await Book.find({})
             book.teacherId.institute && 
             book.teacherId.institute === currentUser.institute
         );
-
-        console.log(`Found ${instituteBooks.length} books from institute: ${currentUser.institute}`);
-        console.log('About to render upload template');
 
         res.render('books', {
             books: instituteBooks,
